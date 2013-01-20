@@ -1,28 +1,30 @@
-package test::Web::DomainName::IDNEnabled;
 use strict;
 use warnings;
 use Path::Class;
 use lib file (__FILE__)->dir->parent->subdir ('lib')->stringify;
-use base qw(Test::Class);
+use lib glob file (__FILE__)->dir->parent->subdir ('t_deps', 'modules', '*', 'lib')->stringify;
+use Test::X1;
 use Web::DomainName::IDNEnabled;
 use Test::More;
 
-sub _versions : Test(1) {
+test {
+  my $c = shift;
   ok $Web::DomainName::IDNEnabled::VERSION;
-} # _versions
+  done $c;
+} n => 1, name => 'version';
 
-sub _tlds : Test(2) {
+test {
+  my $c = shift;
   ok $Web::DomainName::IDNEnabled::TLDs->{jp};
   ok !$Web::DomainName::IDNEnabled::TLDs->{arpa};
-} # _tlds
+  done $c;
+} n => 2, name => 'tlds';
 
-__PACKAGE__->runtests;
-
-1;
+run_tests;
 
 =head1 LICENSE
 
-Copyright 2011-2012 Wakaba <w@suika.fam.cx>.
+Copyright 2011-2013 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

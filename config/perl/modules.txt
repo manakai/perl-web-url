@@ -1,10 +1,5 @@
+Carp
 Encode
 Exporter::Lite
 Unicode::Normalize
 Unicode::Stringprep
-
-Data::Dumper
-Path::Class
-Test::Class
-Test::Differences
-Test::More
