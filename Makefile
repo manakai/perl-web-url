@@ -3,10 +3,6 @@ POD2HTML = pod2html --css "http://suika.fam.cx/www/style/html/pod.css" \
   --htmlroot "../.."
 SED = sed
 GIT = git
-PERL_VERSION = latest
-PROVE = prove
-PERL = perl
-PERL_PATH = $(abspath local/perlbrew/perls/perl-$(PERL_VERSION)/bin)
 
 all: config/perl/libs.txt \
   doc/README.ja.html doc/README.en.html \
@@ -17,18 +13,21 @@ all: config/perl/libs.txt \
 
 ## ------ Deps ------
 
-Makefile-setupenv: Makefile.setupenv
-	make --makefile Makefile.setupenv setupenv-update \
-            SETUPENV_MIN_REVISION=20120330
+WGET = wget
 
-Makefile.setupenv:
-	wget -O $@ https://raw.github.com/wakaba/perl-setupenv/master/Makefile.setupenv
+deps: pmbp-install
 
-local-perl generatepm \
-perl-exec perl-version pmb-update pmb-install local-submodules \
-lperl lprove \
-: %: Makefile-setupenv
-	make --makefile Makefile.setupenv $@
+local/bin/pmbp.pl:
+	mkdir -p local/bin
+	$(WGET) -O $@ https://raw.github.com/wakaba/perl-setupenv/master/bin/pmbp.pl
+pmbp-upgrade: local/bin/pmbp.pl
+	perl local/bin/pmbp.pl --update-pmbp-pl
+pmbp-update: pmbp-upgrade
+	perl local/bin/pmbp.pl --update
+pmbp-install: pmbp-upgrade
+	perl local/bin/pmbp.pl --install \
+            --create-perl-command-shortcut perl \
+            --create-perl-command-shortcut prove
 
 git-submodules:
 	$(GIT) submodule update --init
@@ -49,23 +48,21 @@ lib/Web/DomainName/IDNEnabled.html: %.html: %.pm
 
 ## ------ Tests ------
 
-PERL_ENV = PATH=$(PERL_PATH):$(PATH) PERL5LIB=$(shell cat config/perl/libs.txt)
+PERL = ./perl
 
-test: safetest
+test: test-deps show-perl-version show-unicore-version test-main
 
-test-deps: git-submodules local-submodules pmb-install
-
-safetest: test-deps show-perl-version show-unicore-version safetest-main
+test-deps: deps
 
 show-perl-version:
-	$(PERL_ENV) perl -v
+	$(PERL) -v
 
 show-unicore-version: config/perl/libs.txt
-	echo "Unicode version of Perl $(PERL_VERSION) is..."
-	$(PERL_ENV) perl -e 'print [grep { -f $$_ } map { "$$_/unicore/version" } @INC]->[0]' | xargs cat
+	echo "Unicode version of Perl is..."
+	$(PERL) -e 'print [grep { -f $$_ } map { "$$_/unicore/version" } @INC]->[0]' | xargs cat
 
-safetest-main:
-	cd t && $(PERL_ENV) $(MAKE) test
+test-main:
+	cd t && $(MAKE) test
 
 ## ------ Distribution ------
 

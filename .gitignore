@@ -3,3 +3,8 @@
 /config/perl/libs.txt
 /config/perl/submodules.txt
 /Makefile.setupenv
+/perl
+/prove
+/plackup
+/cin
+/deps/
