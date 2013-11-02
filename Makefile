@@ -1,5 +1,5 @@
 HARUSAME = harusame
-POD2HTML = pod2html --css "http://suika.fam.cx/www/style/html/pod.css" \
+POD2HTML = pod2html --css "http://suika.suikawiki.org/www/style/html/pod.css" \
   --htmlroot "../.."
 SED = sed
 GIT = git

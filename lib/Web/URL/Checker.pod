@@ -1,0 +1,184 @@
+=head1 NAME
+
+Web::URL::Checker - URL validator
+
+=head1 SYNOPSIS
+
+  use Web::URL::Checker;
+  my $checker = Web::URL::Checker->new_from_string ($url);
+  warn $checker->is_iri_reference;
+
+=head1 METHODS
+
+Following methods are available:
+
+=over 4
+
+=item $checker = Web::URL::Checker->new_from_string ($url)
+
+Create a new checker from the specified URL.  The argument must be a
+character string.
+
+=item $code = $checker->onerror
+
+=item $checker->onerror ($code)
+
+Return or specify the code reference to which any errors and warnings
+during the parsing is reported.
+
+=back
+
+=head2 Syntax testers
+
+Following method returns whether the URL is syntactically conformant
+or not.  There are versioned and unversioned methods.  In most cases,
+only unversioned methods, which tests against the latest relevant
+standard, should be used.
+
+=over 4
+
+=item $boolean = $checker->is_absolute_uri
+
+=item $boolean = $checker->is_absolute_uri_3986
+
+Return whether it is an absolute URI or not.  According to RFC 3986,
+an absolute URI is an ASCII absolute URL without fragment identifier.
+[RFC3986]
+
+=item $boolean = $checker->is_empty_reference
+
+Return whether it is a relative URL that is the empty string or not.
+
+=item $boolean = $checker->is_iri
+
+=item $boolean = $checker->is_iri_3987
+
+Return whether it is an IRI or not.  According to RFC 3987, IRIs are a
+subset of absolute URL with or without fragment identifier.  [RFC3987]
+
+=item $boolean = $checker->is_iri_reference
+
+=item $boolean = $checker->is_iri_reference_3987
+
+Return whether it is an IRI reference or not.  According to RFC 3987,
+IRI references are a subset of URL, absolute or relative, with or
+without fragment identifier.  [RFC3987]
+
+=item $boolean = $checker->is_relative_iri_reference
+
+=item $boolean = $checker->is_relative_iri_reference_3987
+
+Return whether is is a relative IRI reference or not.  According to
+RFC 3987, relative IRI references are a subset of relative URL with or
+without fragment identifier.  [RFC3987]
+
+=item $boolean = $checker->is_relative_reference
+
+=item $boolean = $checker->is_relative_reference_3986
+
+Return whether it is a relative reference or not.  According to RFC
+3986, a relative reference is an ASCII relative URL with or without
+fragment identifier.  [RFC3986]
+
+=item $boolean = $checker->is_uri
+
+=item $boolean = $checker->is_uri_3986
+
+Return whether it is a URI or not.  According to RFC 3986, a URI is an
+ASCII absolute URL with or without fragment identifier.  [RFC3986]
+
+=item $boolean = $checker->is_uri_reference
+
+=item $boolean = $checker->is_uri_reference_3986
+
+Return whether it is a URI reference or not.  According to RFC 3986, a
+URI reference is an ASCII URL, absolute or relative, with or without
+fragment identifier.  [RFC3986]
+
+=back
+
+=head2 Conformance checkers
+
+Following methods check whether the URL is conforming or not.  Any
+conformance error, as well as warnings, are reported through the
+C<onerror> handler.  There are versioned and unversioned methods.  In
+most cases, only unversioned methods, which tests against the latest
+relevant standard, should be used.
+
+=over 4
+
+=item $checker->check_iri
+
+=item $checker->check_iri_3987
+
+Check whether it is a conforming IRI or not.  [RFC3987]
+
+XXX This method is incomplete.
+
+=item $checker->check_iri_reference
+
+=item $checker->check_iri_reference_3987
+
+Check whether it is a conforming IRI reference or not.  [RFC3987]
+
+XXX This method is incomplete.
+
+=item $checker->check_rdf_uri_reference
+
+Check whether it is a conforming RDF URI reference or not.  [RDF]
+
+XXX This method is incomplete.
+
+=back
+
+=head1 BUGS
+
+The module does not support the URL Standard yet.
+
+=head1 SPECIFICATIONS
+
+=over 4
+
+=item RDF
+
+Resource Description Framework (RDF): Concepts and Abstract Syntax
+<http://www.w3.org/TR/2004/REC-rdf-concepts-20040210/#section-Graph-URIref>.
+
+=item RFC3986
+
+Uniform Resource Identifier (URI): Generic Syntax
+<http://tools.ietf.org/html/rfc3986>.
+
+=item RFC3987
+
+Internationalized Resource Identifiers (IRIs)
+<http://tools.ietf.org/html/rfc3987>.
+
+=back
+
+=head1 HISTORY
+
+This module derived from L<Message::URI::URIReference>
+<https://github.com/wakaba/manakai/blob/master/lib/Message/URI/URIReference.pm>
+and L<Whatpm::URIChecker>
+<https://github.com/wakaba/manakai/blob/master/lib/Whatpm/URIChecker.pm>,
+the former derived from
+<https://github.com/wakaba/manakai/blob/master/lib/Message/URI/Generic.dis>.
+
+=head1 AUTHOR
+
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 LICENSE
+
+Copyright 2006-2013 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+Portions of this module are derived from the example parser (April 7,
+2004) available at
+<http://www.gbiv.com/protocols/uri/rev-2002/uri_test.pl> that is
+placed in the Public Domain by Roy T. Fielding and Day Software, Inc.
+
+=back
