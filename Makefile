@@ -15,7 +15,7 @@ all: config/perl/libs.txt \
 
 WGET = wget
 
-deps: pmbp-install
+deps: git-submodules pmbp-install
 
 local/bin/pmbp.pl:
 	mkdir -p local/bin
