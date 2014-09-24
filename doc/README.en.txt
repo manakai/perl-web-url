@@ -33,12 +33,11 @@ Web::URL::Canonicalize - Perl URL Canonicalizer
 
 Latest version of these files are available from Git repositories:
 
-- <https://github.com/wakaba/perl-weburl>
-- <http://suika.fam.cx/gate/git/wi/web/perl-weburl.git/tree>
+- <https://github.com/manakai/perl-web-url>
 
 * Author
 
-Wakaba <w@suika.fam.cx>.
+Wakaba <wakaba@suikawiki.org>.
 
 * License
 
