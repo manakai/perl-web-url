@@ -25,14 +25,13 @@ same manner Web browsers do.
 
 * Distribution
 
-Latest version of these files are available from Git repositories:
+Latest version of these files are available from the Git repository:
 
-- <https://github.com/wakaba/perl-web-url>
-- <http://suika.fam.cx/gate/git/wi/web/perl-web-url.git/tree>
+- <https://github.com/manakai/perl-web-url>
 
 * Author
 
-Wakaba <w@suika.fam.cx>.
+Wakaba <wakaba@suikawiki.org>.
 
 * License
 
