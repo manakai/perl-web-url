@@ -2,10 +2,6 @@
 	path = modules/web-encodings
 	url = git://github.com/wakaba/perl-web-encodings.git
 	track = master
-[submodule "modules/testdataparser"]
-	path = modules/testdataparser
-	url = git://github.com/wakaba/testdataparser.git
-	track = master
 [submodule "modules/charclass"]
 	path = modules/charclass
 	url = git://github.com/wakaba/perl-charclass.git
@@ -17,4 +13,8 @@
 [submodule "t_deps/modules/tests-web-url"]
 	path = t_deps/modules/tests-web-url
 	url = git://github.com/wakaba/tests-web-url.git
+	track = master
+[submodule "t_deps/modules/testdataparser"]
+	path = t_deps/modules/testdataparser
+	url = git://github.com/wakaba/testdataparser.git
 	track = master
