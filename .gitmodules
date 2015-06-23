@@ -1,6 +1,6 @@
 [submodule "modules/web-encodings"]
 	path = modules/web-encodings
-	url = git://github.com/wakaba/perl-web-encodings.git
+	url = git://github.com/manakai/perl-web-encodings.git
 	track = master
 [submodule "modules/charclass"]
 	path = modules/charclass
