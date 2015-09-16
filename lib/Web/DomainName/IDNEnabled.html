@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Web::DomainName::IDNEnabled - List of IDN-enabled TLDs</title>
-<link rel="stylesheet" href="http://suika.fam.cx/www/style/html/pod.css" type="text/css" />
+<link rel="stylesheet" href="http://suika.suikawiki.org/www/style/html/pod.css" type="text/css" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link rel=author href="#author">
 </head>
@@ -41,14 +41,14 @@
 <pre>
   use Web::DomainName::IDNEnabled;
   ok $Web::DomainName::IDNEnabled::TLDs-&gt;{jp};
-  ng $Web::DomainName::IDNEnabled::TLDs-&gt;{fr};</pre>
+  ng $Web::DomainName::IDNEnabled::TLDs-&gt;{arpa};</pre>
 <p>
 </p>
 <hr />
 <h1><a name="description">DESCRIPTION</a></h1>
-<p>The <code>Web::DomainName::IDNEnabled</code> module provides a list of IDN-enabled
-TLDs.  It contains TLDs listed in the <em>IDN-enabled TLDs</em> (as of
-2011-05-05) maintained by the Mozilla project.</p>
+<p>The <code>Web::DomainName::IDNEnabled</code> module provides the list of
+IDN-enabled TLDs, which is same as the list of the <em>IDN-enabled TLDs</em>
+maintained by the Mozilla project.</p>
 <p>
 </p>
 <hr />
@@ -61,22 +61,22 @@ existing keys are always true.</p>
 </p>
 <hr />
 <h1><a name="see_also">SEE ALSO</a></h1>
-<p>IDN-enabled TLDs
-&lt;http://www.mozilla.org/projects/security/tld-idn-policy-list.html&gt;.</p>
-<p>&lt;http://mxr.mozilla.org/mozilla-central/source/modules/libpref/src/init/all.js&gt;.
-(Search for &quot;network.IDN.whitelist.&quot;.)</p>
+<p>IDN-enabled TLDs — Mozilla
+&lt;https://www.mozilla.org/en-US/about/governance/policies/security-group/tld-idn/&gt;.</p>
+<p>&lt;https://github.com/mozilla/gecko-dev/blob/master/modules/libpref/init/all.js&gt;.
+(Search for <code>network.IDN.whitelist.</code>.)</p>
 <p>
 </p>
 <hr />
 <h1><a name="author">AUTHOR</a></h1>
-<p>Wakaba &lt;<a href="mailto:w@suika.fam.cx">w@suika.fam.cx</a>&gt;.</p>
+<p>Wakaba &lt;<a href="mailto:wakaba@suikawiki.org">wakaba@suikawiki.org</a>&gt;.</p>
 <p>The <code>Web::DomainName::IDNEnabled</code> module contains data extracted from
 files maintained by the Mozilla project.</p>
 <p>
 </p>
 <hr />
 <h1><a name="license">LICENSE</a></h1>
-<p>Copyright 2011 Wakaba &lt;<a href="mailto:w@suika.fam.cx">w@suika.fam.cx</a>&gt;.</p>
+<p>Copyright 2011-2015 Wakaba &lt;<a href="mailto:wakaba@suikawiki.org">wakaba@suikawiki.org</a>&gt;.</p>
 <p>This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.</p>
 
