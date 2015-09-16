@@ -1,29 +1,3 @@
-#!/usr/bin/perl
-use strict;
-use warnings;
-use Data::Dumper;
-$Data::Dumper::Sortkeys = 1;
-
-my $tlds = {};
-
-while (<>) {
-  if (m{pref\("network.IDN.whitelist.([0-9a-zA-Z-]+)", true\)}) {
-    $tlds->{lc $1} = 1;
-  }
-}
-
-print q{package Web::DomainName::IDNEnabled;
-our $VERSION = '1.1';
-
-## This module is automatically generated.  Don't edit!
-
-$TLDs =
-};
-
-print Dumper $tlds;
-
-print q{
-
 =head1 NAME
 
 Web::DomainName::IDNEnabled - List of IDN-enabled TLDs
@@ -49,27 +23,24 @@ existing keys are always true.
 
 =head1 SEE ALSO
 
-IDN-enabled TLDs
-<http://www.mozilla.org/projects/security/tld-idn-policy-list.html>.
+IDN-enabled TLDs — Mozilla
+<https://www.mozilla.org/en-US/about/governance/policies/security-group/tld-idn/>.
 
-<http://mxr.mozilla.org/mozilla-central/source/modules/libpref/src/init/all.js>.
-(Search for "network.IDN.whitelist.".)
+<https://github.com/mozilla/gecko-dev/blob/master/modules/libpref/init/all.js>.
+(Search for C<network.IDN.whitelist.>.)
 
 =head1 AUTHOR
 
-Wakaba <w@suika.fam.cx>.
+Wakaba <wakaba@suikawiki.org>.
 
 The C<Web::DomainName::IDNEnabled> module contains data extracted from
 files maintained by the Mozilla project.
 
 =head1 LICENSE
 
-Copyright 2011-2012 Wakaba <w@suika.fam.cx>.
+Copyright 2011-2015 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;
-};
