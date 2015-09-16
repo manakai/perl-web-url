@@ -14,6 +14,8 @@ The C<Web::DomainName::IDNEnabled> module provides the list of
 IDN-enabled TLDs, which is same as the list of the I<IDN-enabled TLDs>
 maintained by the Mozilla project.
 
+Note that the list is no longer maintained by the Mozilla project.
+
 =head1 VARIABLE
 
 The module defines a variable: C<$Web::DomainName::IDNEnabled::TLDs>.  It
