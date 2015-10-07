@@ -1,4 +1,4 @@
-HARUSAME = harusame
+HARUSAME = local/harusame/harusame
 POD2HTML = pod2html --css "http://suika.suikawiki.org/www/style/html/pod.css" \
   --htmlroot "../.."
 SED = sed
@@ -43,9 +43,12 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 	mkdir -p local/perl-latest/pm/lib/perl5/JSON
 	$(WGET) -O $@ https://raw.githubusercontent.com/wakaba/perl-json-ps/master/lib/JSON/PS.pm
 
+deps-harusame: local/bin/pmbp.pl
+	perl local/bin/pmbp.pl --install-perl-app https://github.com/wakaba/harusame
+
 ## ------ Build ------
 
-build: deps json-ps lib/Web/DomainName/IDNEnabled.pm \
+build: deps json-ps deps-harusame lib/Web/DomainName/IDNEnabled.pm \
   doc/README.ja.html doc/README.en.html \
   lib/Web/URL/Canonicalize.html \
   lib/Web/IPAddr/Canonicalize.html \
