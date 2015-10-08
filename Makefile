@@ -1,4 +1,3 @@
-HARUSAME = local/harusame/harusame
 POD2HTML = pod2html --css "http://suika.suikawiki.org/www/style/html/pod.css" \
   --htmlroot "../.."
 SED = sed
@@ -63,11 +62,13 @@ lib/Web/DomainName/IDNEnabled.pm: local/tlds.json bin/idnenabled.pl
 
 ## ------ Documents ------
 
+HARUSAME = cd local/harusame && ./harusame
+
 doc/README.en.html: doc/README.html.src
-	$(HARUSAME) --lang en < $< > $@
+	$(HARUSAME) --lang en < $(abspath $<) > $(abspath $@)
 
 doc/README.ja.html: doc/README.html.src
-	$(HARUSAME) --lang ja < $< > $@
+	$(HARUSAME) --lang ja < $(abspath $<) > $(abspath $@)
 
 %.html: %.pod
 	$(POD2HTML) $< | $(SED) -e 's/<link rev="made" href="mailto:[^"]\+" \/>/<link rel=author href="#author">/' > $@
