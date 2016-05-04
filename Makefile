@@ -3,7 +3,7 @@ GIT = git
 all:
 
 clean: clean-json-ps
-	rm -fr local/tlds.json
+	rm -fr local/*.json
 
 updatenightly: clean local/bin/pmbp.pl build
 	git add lib
@@ -39,19 +39,19 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 	mkdir -p local/perl-latest/pm/lib/perl5/JSON
 	$(WGET) -O $@ https://raw.githubusercontent.com/wakaba/perl-json-ps/master/lib/JSON/PS.pm
 
-deps-harusame: local/bin/pmbp.pl
-	perl local/bin/pmbp.pl --install-perl-app https://github.com/wakaba/harusame
-
 ## ------ Build ------
 
-build: deps json-ps deps-harusame \
-  doc/README.ja.html doc/README.en.html
+build: deps json-ps lib/Web/DomainName/IDNEnabled.pm lib/Web/URL/_Defs.pm
 
 local/tlds.json:
 	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-web-defs/master/data/tlds.json
+local/url-schemes.json:
+	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-web-defs/master/data/url-schemes.json
 
 lib/Web/DomainName/IDNEnabled.pm: local/tlds.json bin/idnenabled.pl
 	$(PERL) bin/idnenabled.pl > $@
+lib/Web/URL/_Defs.pm: bin/generate-url-defs.pl local/url-schemes.json
+	$(PERL) $< > $@
 
 ## ------ Tests ------
 

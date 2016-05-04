@@ -59,6 +59,13 @@ The canonicalized URL, if any, is always an absolute URL.  It is not
 always a conforming RFC 3986 URI reference.  It might contain space
 characters.  It might contain non-ASCII characters.
 
+=item $port = Web::URL::Canonicalize::get_default_port $scheme
+
+Return the default port <https://url.spec.whatwg.org/#default-port>
+for the scheme.  The argument must be a canonicalized (lowercase) URL
+scheme.  If no default port is defined for the scheme, C<undef> is
+returned.
+
 =back
 
 Additionally, following functions can be exported if necessary (and if
@@ -69,6 +76,10 @@ C<canonicalize_parsed_url>, and C<serialize_parsed_url>.
 
 There are several thousands of test cases in repository
 <https://github.com/wakaba/tests-web-url>.
+
+=head1 SPECIFICATION
+
+URL Standard <https://url.spec.whatwg.org/>.
 
 =head1 SEE ALSO
 
@@ -83,11 +94,11 @@ L<Web::Encoding>.
 
 =head1 AUTHOR
 
-Wakaba <w@suika.fam.cx>.
+Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2011 Wakaba <w@suika.fam.cx>.
+Copyright 2011-2016 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

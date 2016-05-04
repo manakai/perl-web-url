@@ -13,6 +13,7 @@ our @EXPORT = qw(url_to_canon_url);
 our @EXPORT_OK = qw(
   url_to_canon_parsed_url
   parse_url resolve_url canonicalize_parsed_url serialize_parsed_url
+  get_default_port
 );
 
 our $IsHierarchicalScheme = {
@@ -30,17 +31,10 @@ our $IsNonHierarchicalScheme = {
   vbscript => 1,
 };
 
-our $DefaultPort = {
-  ftp => 21,
-  gopher => 70,
-  http => 80,
-  https => 443,
-  telnet => 23,
-  tn3270 => 23,
-  rlogin => 513,
-  ws => 80,
-  wss => 443,
-};
+sub get_default_port ($) {
+  require Web::URL::_Defs;
+  return $Web::URL::_Defs->{default_port}->{$_[0]}; # or undef
+} # get_default_port
 
 # ------ Parsing ------
 
@@ -530,7 +524,7 @@ sub canonicalize_parsed_url ($;$) {
         return $parsed_url;
       } else {
         $parsed_url->{port} += 0;
-        my $default = $DefaultPort->{$parsed_url->{scheme_normalized}};
+        my $default = get_default_port $parsed_url->{scheme_normalized};
         if (defined $default and $default == $parsed_url->{port}) {
           delete $parsed_url->{port};
         }
