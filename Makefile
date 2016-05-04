@@ -1,6 +1,3 @@
-POD2HTML = pod2html --css "http://suika.suikawiki.org/www/style/html/pod.css" \
-  --htmlroot "../.."
-SED = sed
 GIT = git
 
 all:
@@ -47,31 +44,14 @@ deps-harusame: local/bin/pmbp.pl
 
 ## ------ Build ------
 
-build: deps json-ps deps-harusame lib/Web/DomainName/IDNEnabled.pm \
-  doc/README.ja.html doc/README.en.html \
-  lib/Web/URL/Canonicalize.html \
-  lib/Web/IPAddr/Canonicalize.html \
-  lib/Web/DomainName/Canonicalize.html \
-  lib/Web/DomainName/IDNEnabled.html
+build: deps json-ps deps-harusame \
+  doc/README.ja.html doc/README.en.html
 
 local/tlds.json:
 	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-web-defs/master/data/tlds.json
 
 lib/Web/DomainName/IDNEnabled.pm: local/tlds.json bin/idnenabled.pl
 	$(PERL) bin/idnenabled.pl > $@
-
-## ------ Documents ------
-
-HARUSAME = cd local/harusame && ./harusame
-
-doc/README.en.html: doc/README.html.src
-	$(HARUSAME) --lang en < $(abspath $<) > $(abspath $@)
-
-doc/README.ja.html: doc/README.html.src
-	$(HARUSAME) --lang ja < $(abspath $<) > $(abspath $@)
-
-%.html: %.pod
-	$(POD2HTML) $< | $(SED) -e 's/<link rev="made" href="mailto:[^"]\+" \/>/<link rel=author href="#author">/' > $@
 
 ## ------ Tests ------
 
