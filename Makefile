@@ -41,7 +41,9 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 
 ## ------ Build ------
 
-build: deps json-ps lib/Web/DomainName/IDNEnabled.pm lib/Web/URL/_Defs.pm
+build: deps json-ps build-main
+
+build-main: lib/Web/DomainName/IDNEnabled.pm lib/Web/URL/_Defs.pm
 
 local/tlds.json:
 	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-web-defs/master/data/tlds.json

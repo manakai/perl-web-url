@@ -18,3 +18,7 @@
 	path = t_deps/modules/testdataparser
 	url = git://github.com/wakaba/testdataparser
 	track = master
+[submodule "modules/Path-Tiny"]
+	path = modules/Path-Tiny
+	url = https://github.com/dagolden/Path-Tiny
+	track = master

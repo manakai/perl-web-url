@@ -6,6 +6,16 @@ $Web::URL::_Defs = {
                               'https' => '443',
                               'ws' => '80',
                               'wss' => '443'
-                            }
+                            },
+          'origin' => {
+                        'blob' => 'nested',
+                        'file' => 'file',
+                        'ftp' => 'hostport',
+                        'gopher' => 'hostport',
+                        'http' => 'hostport',
+                        'https' => 'hostport',
+                        'ws' => 'hostport',
+                        'wss' => 'hostport'
+                      }
         };
 ;

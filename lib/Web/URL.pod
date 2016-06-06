@@ -14,6 +14,8 @@ The C<Web::URL> object represents a URL record.
 
 =head1 METHODS
 
+There are following methods:
+
 =over 4
 
 =item $url = Web::URL->parse_string ($input_string, $base_url_record)
@@ -27,7 +29,12 @@ If C<undef> is specified, C<about:blank> is used as the base URL.
 
 If the parsing failed, the method returns C<undef>.
 
-=item $string = Web::URL->stringify
+=item $origin = $url->get_origin
+
+Get a new origin object (L<Web::Origin>) representing the origin of
+the URL.
+
+=item $string = $url->stringify
 
 Serialize the URL record as a string.
 

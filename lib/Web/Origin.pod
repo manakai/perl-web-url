@@ -17,6 +17,8 @@ The C<Web::Origin> object represents an origin.
 
 =head1 METHODS
 
+There are following methods:
+
 =over 4
 
 =item $origin = Web::Origin->new_tuple ($scheme, $host, $port)
@@ -58,6 +60,10 @@ Return whether two origins are same origin-domain or not.
 Return the ASCII serialization of the origin.
 
 =back
+
+=head1 SEE ALSO
+
+L<Web::URL> has a method to create an origin object from a URL.
 
 =head1 SPECIFICATION
 

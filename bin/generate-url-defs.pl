@@ -14,6 +14,9 @@ my $Defs = {};
 for my $scheme (keys %$json) {
   my $port = $json->{$scheme}->{'default-port'};
   $Defs->{default_port}->{$scheme} = $port if defined $port;
+
+  my $origin = $json->{$scheme}->{'origin'};
+  $Defs->{origin}->{$scheme} = $origin if defined $origin;
 }
 
 $Data::Dumper::Sortkeys = 1;

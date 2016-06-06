@@ -2,6 +2,7 @@ package Web::URL;
 use strict;
 use warnings;
 our $VERSION = '1.0';
+use Web::URL::_Defs;
 use Web::URL::Canonicalize qw(serialize_parsed_url parse_url resolve_url canonicalize_parsed_url);
 
 sub parse_string ($$;$) {
@@ -18,6 +19,21 @@ sub parse_string ($$;$) {
 
   return bless $url, $_[0];
 } # parse_string
+
+sub get_origin ($) {
+  my $self = $_[0];
+  require Web::Origin;
+  my $origin_type = $Web::URL::_Defs->{origin}->{$self->{scheme}} || '';
+  if ($origin_type eq 'hostport') {
+    return Web::Origin->new_tuple
+        ($self->{scheme}, $self->{host}, $self->{port});
+  } elsif ($origin_type eq 'nested') {
+    my $url = Web::URL->parse_string ($self->{path});
+    return $url->get_origin if defined $url;
+  }
+  # XXX and implementation dependent schemes
+  return Web::Origin->new_opaque;
+} # get_origin
 
 sub stringify ($) {
   return serialize_parsed_url $_[0];
