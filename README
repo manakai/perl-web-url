@@ -7,11 +7,15 @@ same manner Web browsers do.
 * Perl modules
 
 - Web::URL (lib/Web/URL.pm)
-- Web::URL::Canonicalize (lib/Web/URL/Canonicalize.pm)
-- Web::DomainName::Canonicalize (lib/Web/DomainName/Canonicalize.pm)
-- Web::DomainName::IDNEnabled (lib/Web/DomainName/IDNEnabled.pm)
-- Web::IPAddr::Canonicalize (lib/IPAddr/Canonicalize.pm)
+- Web::URL::Parser (lib/Web/URL/Parser.pm)
 - Web::Origin (lib/Web/Origin.pm)
+- Web::DomainName::Canonicalize (lib/Web/DomainName/Canonicalize.pm)
+- Web::IPAddr::Canonicalize (lib/IPAddr/Canonicalize.pm)
+
+Deprecated API:
+
+- Web::URL::Canonicalize (lib/Web/URL/Canonicalize.pm)
+- Web::DomainName::IDNEnabled (lib/Web/DomainName/IDNEnabled.pm)
 
 * Spec
 

@@ -29,6 +29,28 @@ If C<undef> is specified, C<about:blank> is used as the base URL.
 
 If the parsing failed, the method returns C<undef>.
 
+=item $string = $url->scheme
+
+Return the scheme component of the URL, canonicalized (i.e. in
+lowercase).
+
+=item $string = $url->username
+
+Return the username component of the URL.  If the URL has no explicit
+username component, the empty string is returned.
+
+=item $string = $url->password
+
+Return the password component of the URL, if any, or C<undef>.
+
+=item $string = $url->host
+
+Return the host component of the URL, canonicalized.
+
+=item $string = $url->port
+
+Return the port component of the URL, if any, or C<undef>.
+
 =item $origin = $url->get_origin
 
 Get a new origin object (L<Web::Origin>) representing the origin of

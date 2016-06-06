@@ -1,0 +1,47 @@
+=head1 NAME
+
+Web::URL::Parser - URL parser
+
+=head1 SYNOPSIS
+
+XXX
+
+=head1 METHODS
+
+Following methods are available:
+
+=over 4
+
+=item $parser = Web::URL::Parser->new
+
+Create a new parser.
+
+=item $url = $parser->parse_proxy_env ($string)
+
+Parse a string using a proxy environment variable parser.  If failed,
+C<undef> is returned.  Otherwise, a URL record object (L<Web::URL>) is
+returned.
+
+This method is appropriate for parsing C<http_proxy>, C<https_proxy>,
+or C<ftp_proxy> environment variable value, decoded by
+platform-locale-dependent character encoding.
+
+=back
+
+=head1 SPECIFICATION
+
+Web Transport Processing
+<https://wiki.suikawiki.org/n/Web%20Transport%20Processing#anchor-1056>.
+
+=head1 AUTHOR
+
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 LICENSE
+
+Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

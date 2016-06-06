@@ -20,6 +20,26 @@ sub parse_string ($$;$) {
   return bless $url, $_[0];
 } # parse_string
 
+sub scheme ($) {
+  return $_[0]->{scheme};
+} # scheme
+
+sub host ($) {
+  return $_[0]->{host}; # or undef
+} # host
+
+sub port ($) {
+  return $_[0]->{port}; # or undef
+} # port
+
+sub username ($) {
+  return defined $_[0]->{user} ? $_[0]->{user} : '';
+} # username
+
+sub password ($) {
+  return $_[0]->{password}; # or undef
+} # password
+
 sub get_origin ($) {
   my $self = $_[0];
   require Web::Origin;

@@ -66,6 +66,28 @@ for (
   } n => 4;
 }
 
+for (
+  [q<http://hoge/fuga>, 'http', '', undef, 'hoge', undef],
+  [q<Http://hoge:052/fuga>, 'http', '', undef, 'hoge', 52],
+  [q<httpS://fopo@hoge/fuga>, 'https', 'fopo', undef, 'hoge', undef],
+  [q<http://ho:ge@/fuga>, 'http', 'ho', 'ge', '', undef],
+  [q<htt:foo:bar@ga>, 'htt', '', undef, undef, undef],
+  [qq<http://\x{5000}hoge/fuga>, 'http', '', undef, 'xn--hoge-pc7f', undef],
+  [q<http://123.44.000.01/fuga>, 'http', '', undef, '123.44.0.1', undef],
+) {
+  my ($input, $scheme, $username, $password, $host, $port) = @$_;
+  test {
+    my $c = shift;
+    my $url = Web::URL->parse_string ($input);
+    is $url->scheme, $scheme;
+    is $url->username, $username;
+    is $url->password, $password;
+    is $url->host, $host;
+    is $url->port, $port;
+    done $c;
+  } n => 5, name => $input;
+}
+
 run_tests;
 
 =head1 LICENSE
