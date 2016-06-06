@@ -45,11 +45,21 @@ Return the password component of the URL, if any, or C<undef>.
 
 =item $string = $url->host
 
-Return the host component of the URL, canonicalized.
+Return the host component of the URL, canonicalized, if any, or
+C<undef>.
 
 =item $string = $url->port
 
 Return the port component of the URL, if any, or C<undef>.
+
+=item $string = $url->hostport
+
+Serialize the host and port components of the URL, if any, or
+C<undef>.
+
+=item $string = $url->pathquery
+
+Serialize the path and query components of the URL.
 
 =item $origin = $url->get_origin
 
@@ -59,6 +69,16 @@ the URL.
 =item $string = $url->stringify
 
 Serialize the URL record as a string.
+
+=item $string = $url->stringify_without_fragment
+
+Serialize the URL record as a string, excluding any fragment
+component.
+
+=item $url2 = $url->clone
+
+Create another URL record object which has the same components as the
+URL record.
 
 =back
 

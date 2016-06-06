@@ -7,14 +7,14 @@ use Test::X1;
 use Web::URL;
 
 for (
-  [q<http://hoge/fuga?abc#fee>, undef, q<http://hoge/fuga?abc#fee>],
-  [q<../foha/gw#a%41br>, q<http://foo/bar/baz?aa>, q<http://foo/foha/gw#a%41br>],
-  [q<ABOUT:Blank#a>, undef, q<about:Blank#a>],
-  [q<HTTPS://FOO:013>, undef, q<https://foo:13/>],
-  [q<http://hoge:fuga>, undef, undef],
-  [q<http:hoge>, q<http://foo/bar>, q<http://foo/hoge>],
+  [q<http://hoge/fuga?abc#fee>, undef, q<http://hoge/fuga?abc#fee>, q<http://hoge/fuga?abc>],
+  [q<../foha/gw#a%41br>, q<http://foo/bar/baz?aa>, q<http://foo/foha/gw#a%41br>, q<http://foo/foha/gw>],
+  [q<ABOU:Blank#a>, undef, q<abou:Blank#a>, q<abou:Blank>],
+  [q<HTTPS://FOO:013>, undef, q<https://foo:13/>, q<https://foo:13/>],
+  [q<http://hoge:fuga>, undef, undef, undef],
+  [q<http:hoge>, q<http://foo/bar>, q<http://foo/hoge>, q<http://foo/hoge>],
 ) {
-  my ($input, $base, $expected) = @$_;
+  my ($input, $base, $expected, $expected2) = @$_;
   test {
     my $c = shift;
 
@@ -23,13 +23,15 @@ for (
     if (defined $expected) {
       isa_ok $url, 'Web::URL';
       is $url->stringify, $expected;
+      is $url->stringify_without_fragment, $expected2;
     } else {
       is $url, undef;
+      ok 1;
       ok 1;
     }
 
     done $c;
-  } n => 2;
+  } n => 3;
 }
 
 for (
@@ -67,15 +69,19 @@ for (
 }
 
 for (
-  [q<http://hoge/fuga>, 'http', '', undef, 'hoge', undef],
-  [q<Http://hoge:052/fuga>, 'http', '', undef, 'hoge', 52],
-  [q<httpS://fopo@hoge/fuga>, 'https', 'fopo', undef, 'hoge', undef],
-  [q<http://ho:ge@/fuga>, 'http', 'ho', 'ge', '', undef],
-  [q<htt:foo:bar@ga>, 'htt', '', undef, undef, undef],
-  [qq<http://\x{5000}hoge/fuga>, 'http', '', undef, 'xn--hoge-pc7f', undef],
-  [q<http://123.44.000.01/fuga>, 'http', '', undef, '123.44.0.1', undef],
+  [q<http://hoge/fuga>, 'http', '', undef, 'hoge', undef, 'hoge', '/fuga'],
+  [q<Http://hoge:052/fuga>, 'http', '', undef, 'hoge', 52, 'hoge:52', '/fuga'],
+  [q<httpS://fopo@hoge/fuga>, 'https', 'fopo', undef, 'hoge', undef, 'hoge', '/fuga'],
+  [q<http://ho:ge@_/fuga>, 'http', 'ho', 'ge', '_', undef, '_', '/fuga'],
+  [q<htt:foo:bar@ga>, 'htt', '', undef, undef, undef, undef, 'foo:bar@ga'],
+  [qq<http://\x{5000}hoge/fuga>, 'http', '', undef, 'xn--hoge-pc7f', undef, 'xn--hoge-pc7f', '/fuga'],
+  [q<http://123.44.000.01/fuga>, 'http', '', undef, '123.44.0.1', undef, '123.44.0.1', '/fuga'],
+  [q<ftp://foo.bar>, 'ftp', '', undef, 'foo.bar', undef, 'foo.bar', '/'],
+  [q<ftp://foo.bar?ab%4a>, 'ftp', '', undef, 'foo.bar', undef, 'foo.bar', '/?ab%4a'],
+  [q<ftp://foo.bar/abc?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, 'foo.bar', '/abc?foo=bar'],
 ) {
-  my ($input, $scheme, $username, $password, $host, $port) = @$_;
+  my ($input, $scheme, $username, $password, $host, $port,
+      $hostport, $pathquery) = @$_;
   test {
     my $c = shift;
     my $url = Web::URL->parse_string ($input);
@@ -84,9 +90,21 @@ for (
     is $url->password, $password;
     is $url->host, $host;
     is $url->port, $port;
+    is $url->hostport, $hostport;
+    is $url->pathquery, $pathquery;
     done $c;
-  } n => 5, name => $input;
+  } n => 7, name => $input;
 }
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a#x>);
+  my $clone = $url->clone;
+  isa_ok $clone, 'Web::URL';
+  isnt $clone, $url;
+  is $clone->stringify, 'http://foo.bar/baz/abc?a#x';
+  done $c;
+} n => 3, name => 'clone';
 
 run_tests;
 

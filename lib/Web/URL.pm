@@ -24,6 +24,14 @@ sub scheme ($) {
   return $_[0]->{scheme};
 } # scheme
 
+sub username ($) {
+  return defined $_[0]->{user} ? $_[0]->{user} : '';
+} # username
+
+sub password ($) {
+  return $_[0]->{password}; # or undef
+} # password
+
 sub host ($) {
   return $_[0]->{host}; # or undef
 } # host
@@ -32,13 +40,18 @@ sub port ($) {
   return $_[0]->{port}; # or undef
 } # port
 
-sub username ($) {
-  return defined $_[0]->{user} ? $_[0]->{user} : '';
-} # username
+sub hostport ($) {
+  return undef unless defined $_[0]->{host};
+  return $_[0]->{host} . (defined $_[0]->{port} ? ':' . $_[0]->{port} : '');
+} # hostport
 
-sub password ($) {
-  return $_[0]->{password}; # or undef
-} # password
+sub pathquery ($) {
+  return $_[0]->{path} . (defined $_[0]->{query} ? '?' . $_[0]->{query} : '');
+} # pathquery
+
+sub clone ($) {
+  return bless {%{$_[0]}}, ref $_[0];
+} # clone
 
 sub get_origin ($) {
   my $self = $_[0];
@@ -58,6 +71,11 @@ sub get_origin ($) {
 sub stringify ($) {
   return serialize_parsed_url $_[0];
 } # stringify
+
+sub stringify_without_fragment ($) {
+  local $_[0]->{fragment} = undef;
+  return serialize_parsed_url $_[0];
+} # stringify_without_fragment
 
 1;
 
