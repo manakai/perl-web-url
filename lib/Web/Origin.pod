@@ -1,0 +1,77 @@
+=head1 NAME
+
+Web::Origin - Origin API
+
+=head1 SYNOPSIS
+
+  use Web::Origin;
+  $origin = Web::Origin->new_tuple ($host, $domain, $port);
+  $origin = Web::Origin->new_opaque;
+  warn $origin->is_opaque;
+  warn $origin->to_ascii;
+  warn $origin->same_origin_as ($origin2);
+
+=head1 SYNOPSIS
+
+The C<Web::Origin> object represents an origin.
+
+=head1 METHODS
+
+=over 4
+
+=item $origin = Web::Origin->new_tuple ($scheme, $host, $port)
+
+Return a tuple origin.
+
+The first argument must be a canonicalized (i.e. lowercase) URL
+scheme.
+
+The second argument must be a canonicalized host (i.e. domain, IPv4
+address, or IPv6 address) string.
+
+The third argument must be a port number or C<undef>.
+
+=item $origin = Web::Origin->new_opaque
+
+Return an opaque origin.
+
+=item $boolean = $origin->is_opaque
+
+Return whether the origin is an opaque origin (true) or tuple origin
+(false).
+
+=item $origin->set_domain ($domain)
+
+Set the domain of the origin.  The origin must be a tuple origin.  The
+argument must be a canonicalized domain string.
+
+=item $boolean = $origin1->same_origin_as ($origin2)
+
+Return whether two origins are same origin or not.
+
+=item $boolean = $origin1->same_origin_domain_as ($origin2)
+
+Return whether two origins are same origin-domain or not.
+
+=item $string = $origin->to_ascii
+
+Return the ASCII serialization of the origin.
+
+=back
+
+=head1 SPECIFICATION
+
+HTML Standard <https://html.spec.whatwg.org/#origin>.
+
+=head1 AUTHOR
+
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 LICENSE
+
+Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
