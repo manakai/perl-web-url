@@ -3,7 +3,7 @@ use strict;
 use warnings;
 our $VERSION = '1.0';
 require utf8;
-use Web::Encoding qw(encode_web_utf8);
+use Web::Encoding qw(encode_web_utf8 encode_web_charset is_ascii_compat_charset_name);
 use Web::DomainName::Canonicalize;
 use Web::URL::Scheme qw(get_default_port);
 use Exporter::Lite;
