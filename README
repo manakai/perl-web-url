@@ -7,7 +7,9 @@ same manner Web browsers do.
 * Perl modules
 
 - Web::URL (lib/Web/URL.pm)
+- Web::URL::Encoding (lib/Web/URL/Encoding.pm)
 - Web::URL::Parser (lib/Web/URL/Parser.pm)
+- Web::URL::Scheme (lib/Web/URL/Scheme.pm)
 - Web::Origin (lib/Web/Origin.pm)
 - Web::DomainName::Canonicalize (lib/Web/DomainName/Canonicalize.pm)
 - Web::IPAddr::Canonicalize (lib/IPAddr/Canonicalize.pm)

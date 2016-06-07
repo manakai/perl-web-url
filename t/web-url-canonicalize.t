@@ -11,7 +11,6 @@ use Test::HTCT::Parser;
 use Web::URL::Canonicalize qw(
   url_to_canon_url url_to_canon_parsed_url
   parse_url resolve_url canonicalize_parsed_url serialize_parsed_url
-  get_default_port
 );
 
 use Data::Dumper;
@@ -320,30 +319,6 @@ test {
   eq_or_diff $parsed, {invalid => 1};
   done $c;
 } n => 1, name => 'resolve_url undef input';
-
-for (
-  [http => 80],
-  [https => 443],
-  [ftp => 21],
-  [gopher => 70],
-  [ws => 80],
-  [wss => 443],
-  [hoge => undef],
-  [sip => undef],
-  [mailto => undef],
-  [HTTP => undef],
-  [file => undef],
-  ['' => undef],
-  [undef, undef],
-) {
-  my ($scheme, $port) = @$_;
-  test {
-    my $c = shift;
-    my $got = get_default_port $scheme;
-    is $got, $port;
-    done $c;
-  } n => 1, name => ['get_default_port', $scheme];
-}
 
 run_tests;
 

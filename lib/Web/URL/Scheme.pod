@@ -1,0 +1,45 @@
+=head1 NAME
+
+Web::URL::Scheme - URL scheme properties
+
+=head1 SYNOPSIS
+
+  use Web::URL::Scheme;
+  warn get_default_port 'http'; # 80
+
+=head1 DESCRIPTION
+
+The C<Web::URL::Scheme> module provides access to properties of URL
+schemes.
+
+=head1 FUNCTION
+
+There is the following function, exported by default:
+
+=over 4
+
+=item $port = get_default_port $scheme
+
+Return the default port <https://url.spec.whatwg.org/#default-port>
+for the scheme.  The argument must be a canonicalized (lowercase) URL
+scheme name, without C<:> delimiter.  If no default port is defined
+for the scheme, C<undef> is returned.
+
+=back
+
+=head1 SPECIFICATION
+
+URL Standard <https://url.spec.whatwg.org/>.
+
+=head1 AUTHOR
+
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 LICENSE
+
+Copyright 2011-2016 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

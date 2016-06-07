@@ -9,21 +9,6 @@ canonicalizes URLs as Web browsers do.
 
 This module is DEPRECATED.  Use L<Web::URL> instead.
 
-=head1 FUNCTION
-
-There is the following function:
-
-=over 4
-
-=item $port = Web::URL::Canonicalize::get_default_port $scheme
-
-Return the default port <https://url.spec.whatwg.org/#default-port>
-for the scheme.  The argument must be a canonicalized (lowercase) URL
-scheme.  If no default port is defined for the scheme, C<undef> is
-returned.
-
-=back
-
 =head1 SPECIFICATION
 
 URL Standard <https://url.spec.whatwg.org/>.

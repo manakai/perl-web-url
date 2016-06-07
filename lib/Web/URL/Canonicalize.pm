@@ -3,8 +3,9 @@ use strict;
 use warnings;
 our $VERSION = '1.0';
 require utf8;
-use Web::Encoding;
+use Web::Encoding qw(encode_web_utf8);
 use Web::DomainName::Canonicalize;
+use Web::URL::Scheme qw(get_default_port);
 use Exporter::Lite;
 no warnings 'utf8';
 
@@ -30,11 +31,6 @@ our $IsNonHierarchicalScheme = {
   mailto => 1,
   vbscript => 1,
 };
-
-sub get_default_port ($) {
-  require Web::URL::_Defs;
-  return $Web::URL::_Defs->{default_port}->{$_[0]}; # or undef
-} # get_default_port
 
 # ------ Parsing ------
 
@@ -662,13 +658,13 @@ sub url_to_canon_parsed_url ($;$$) {
   return canonicalize_parsed_url $url, $_[2];
 } # url_to_canon_parsed_url
 
+1;
+
 =head1 LICENSE
 
-Copyright 2011 Wakaba <w@suika.fam.cx>.
+Copyright 2011-2016 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;
