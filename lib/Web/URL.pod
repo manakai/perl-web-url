@@ -61,6 +61,20 @@ C<undef>.
 
 Serialize the path and query components of the URL.
 
+=item $url->set_query_params ($params, append => $boolean)
+
+Set the query parameters, in the C<application/x-www-form-urlencoded>
+syntax with UTF-8.
+
+If the C<append> flag is set to a true value, any existing query
+component of the URL is preserved and the parameters are appended with
+separator C<&>.
+
+If the C<append> flag is set to a false value, any existing query
+component of the URL is discarded.
+
+This method mutates the URL record object.
+
 =item $origin = $url->get_origin
 
 Get a new origin object (L<Web::Origin>) representing the origin of

@@ -1,0 +1,58 @@
+=head1 NAME
+
+Web::URL::Encoding - URL percent encoding and application/x-www-form-urlencoded
+
+=head1 SYNOPSIS
+
+  use Web::URL::Encoding;
+  warn serialize_form_urlencoded {
+    $name => $value,
+    $name => [$value1, $value2],
+  };
+
+=head1 DESCRIPTION
+
+The C<Web::URL::Encoding> module exports a function for the
+C<application/x-www-form-urlencoded> encoding.
+
+=head1 FUNCTION
+
+The following function is exported:
+
+=over 4
+
+=item $string = serialize_form_urlencoded $params
+
+Serialize a hash reference as an C<application/x-www-form-urlencoded>
+bytes.
+
+The argument must be a hash reference where keys are names of the
+encoded form data set and values are corresponding values.
+
+If the value is C<undef>, that key/value pair is ignored.  If the
+value is an array reference, the items in the array are used as values
+of name/value pairs with same name.  The order is preserved.  The
+array can be empty.
+
+The values are encoded in UTF-8.
+
+=back
+
+=head1 SPECIFICATION
+
+URL Standard <https://url.spec.whatwg.org/>.
+
+=head1 AUTHOR
+
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 LICENSE
+
+Copyright 2009-2013 Hatena <https://www.hatena.ne.jp/>.
+
+Copyright 2014-2016 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

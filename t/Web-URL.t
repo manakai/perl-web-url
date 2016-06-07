@@ -103,8 +103,43 @@ test {
   isa_ok $clone, 'Web::URL';
   isnt $clone, $url;
   is $clone->stringify, 'http://foo.bar/baz/abc?a#x';
+  $clone->set_query_params ({foo => 4});
+  is $url->stringify, q<http://foo.bar/baz/abc?a#x>;
+  is $clone->stringify, q<http://foo.bar/baz/abc?foo=4#x>;
   done $c;
-} n => 3, name => 'clone';
+} n => 5, name => 'clone';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a#x>);
+  $url->set_query_params ({});
+  is $url->stringify, q<http://foo.bar/baz/abc?#x>;
+  done $c;
+} n => 1, name => 'set_query_params';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a#x>);
+  $url->set_query_params ({"\xFE +" => "\x{5000} +"});
+  is $url->stringify, q<http://foo.bar/baz/abc?%C3%BE+%2B=%E5%80%80+%2B#x>;
+  done $c;
+} n => 1, name => 'set_query_params';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a#x>);
+  $url->set_query_params ({}, append => 1);
+  is $url->stringify, q<http://foo.bar/baz/abc?a#x>;
+  done $c;
+} n => 1, name => 'set_query_params';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a#x>);
+  $url->set_query_params ({"\xFE +" => "\x{5000} +"}, append => 1);
+  is $url->stringify, q<http://foo.bar/baz/abc?a&%C3%BE+%2B=%E5%80%80+%2B#x>;
+  done $c;
+} n => 1, name => 'set_query_params';
 
 run_tests;
 

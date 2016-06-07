@@ -4,18 +4,12 @@ use warnings;
 our $VERSION = '1.0';
 use Web::URL::_Defs;
 use Web::URL::Canonicalize qw(serialize_parsed_url parse_url resolve_url canonicalize_parsed_url);
+use Web::URL::Encoding qw(serialize_form_urlencoded);
 
 sub parse_string ($$;$) {
   my $url = resolve_url $_[1], defined $_[2] ? $_[2] : parse_url 'about:blank';
   $url = canonicalize_parsed_url $url, undef;
   return undef if $url->{invalid};
-
-  #if ($url->{is_hierarchical}) {
-  #  $url->{path} = [split m{/}, $url->{path}, -1];
-  #  shift @{$url->{path}};
-  #} else {
-  #  $url->{path} = [$url->{path}];
-  #}
 
   return bless $url, $_[0];
 } # parse_string
@@ -48,6 +42,21 @@ sub hostport ($) {
 sub pathquery ($) {
   return $_[0]->{path} . (defined $_[0]->{query} ? '?' . $_[0]->{query} : '');
 } # pathquery
+
+sub set_query_params ($$;%) {
+  my ($self, $params, %args) = @_;
+  if ($args{append}) {
+    return unless keys %$params;
+    if (defined $self->{query}) {
+      $self->{query} .= '&' if length $self->{query};
+    } else {
+      $self->{query} = '';
+    }
+    $self->{query} .= serialize_form_urlencoded $params;
+  } else {
+    $self->{query} = serialize_form_urlencoded $params;
+  }
+} # set_query_params
 
 sub clone ($) {
   return bless {%{$_[0]}}, ref $_[0];
