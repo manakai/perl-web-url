@@ -4,7 +4,41 @@ use Path::Tiny;
 use lib glob path (__FILE__)->parent->parent->child ('t_deps/modules/*/lib')->stringify;
 use Test::More;
 use Test::X1;
+use Encode;
 use Web::URL::Encoding;
+
+sub _flagged ($) {
+  my $s = $_[0];
+  utf8::upgrade $s;
+  die unless utf8::is_utf8 $s;
+  return $s;
+} # _flagged
+
+for (
+      [undef, '', ''],
+      ['' => '', ''],
+      ['abc' => 'abc', 'abc'],
+      [_flagged 'abc' => 'abc', 'abc'],
+      ["\xA1\xC8\x4E\x4B\x21\x0D" => '%A1%C8NK%21%0D', '%C2%A1%C3%88NK%21%0D'],
+      ["http://abc/a+b?x(y)z~[*]" => 'http%3A%2F%2Fabc%2Fa%2Bb%3Fx%28y%29z%7E%5B%2A%5D', 'http%3A%2F%2Fabc%2Fa%2Bb%3Fx%28y%29z%7E%5B%2A%5D'],
+      ["\x{4e00}\xC1" => '%4E00%C1', '%E4%B8%80%C3%81'],
+      ["ab+cd" => 'ab%2Bcd', 'ab%2Bcd'],
+) {
+  my ($input, $o1, $o2) = @$_;
+  test {
+    my $c = shift;
+
+    #my $s = percent_encode_b ($input);
+    #is $s, $o1;
+    #ok !utf8::is_utf8 ($s);
+
+    my $t = percent_encode_c ($input);
+    is $t, $o2;
+    ok !utf8::is_utf8 ($t);
+
+    done $c;
+  } n => 2;
+}
 
 for (
   [{}, ''],

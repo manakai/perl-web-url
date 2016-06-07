@@ -18,6 +18,13 @@ sub import ($;@) {
   }
 } # import
 
+push @EXPORT, qw(percent_encode_c);
+sub percent_encode_c ($) {
+  my $s = encode_web_utf8 $_[0];
+  $s =~ s/([^0-9A-Za-z._-])/sprintf '%%%02X', ord $1/ge;
+  return $s;
+} # percent_encode_c
+
 sub _form_urlencoded_pe ($) {
   my $s = encode_web_utf8 $_[0];
   $s =~ s/([^*\x2D-.0-9A-Z_a-z])/sprintf '%%%02X', ord $1/ge;
