@@ -56,6 +56,8 @@ URL Standard <https://url.spec.whatwg.org/>.
 RFC 5849, The OAuth 1.0 Protocol
 <https://tools.ietf.org/html/rfc5849>.
 
+Encoding Standard <https://encoding.spec.whatwg.org/>.
+
 When a text is encoded in UTF-8, UTF-8 encoder of the Encoding
 Standard MUST be used.
 

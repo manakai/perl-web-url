@@ -82,18 +82,31 @@ for (
 }
 
 for (
-  [q<http://hoge/fuga>, 'http', '', undef, 'hoge', undef, 'hoge', '/fuga'],
-  [q<Http://hoge:052/fuga>, 'http', '', undef, 'hoge', 52, 'hoge:52', '/fuga'],
-  [q<httpS://fopo@hoge/fuga>, 'https', 'fopo', undef, 'hoge', undef, 'hoge', '/fuga'],
-  [q<http://ho:ge@_/fuga>, 'http', 'ho', 'ge', '_', undef, '_', '/fuga'],
-  [q<htt:foo:bar@ga>, 'htt', '', undef, undef, undef, undef, 'foo:bar@ga'],
-  [qq<http://\x{5000}hoge/fuga>, 'http', '', undef, 'xn--hoge-pc7f', undef, 'xn--hoge-pc7f', '/fuga'],
-  [q<http://123.44.000.01/fuga>, 'http', '', undef, '123.44.0.1', undef, '123.44.0.1', '/fuga'],
-  [q<ftp://foo.bar>, 'ftp', '', undef, 'foo.bar', undef, 'foo.bar', '/'],
-  [q<ftp://foo.bar?ab%4a>, 'ftp', '', undef, 'foo.bar', undef, 'foo.bar', '/?ab%4a'],
-  [q<ftp://foo.bar/abc?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, 'foo.bar', '/abc?foo=bar'],
+  [q<http://hoge/fuga>, 'http', '', undef, 'hoge', undef, undef,
+   'hoge', '/fuga'],
+  [q<Http://hoge:052/fuga>, 'http', '', undef, 'hoge', 52, undef,
+   'hoge:52', '/fuga'],
+  [q<httpS://fopo@hoge/fuga>, 'https', 'fopo', undef, 'hoge', undef, undef,
+   'hoge', '/fuga'],
+  [q<http://ho:ge@_/fuga>, 'http', 'ho', 'ge', '_', undef, undef,
+   '_', '/fuga'],
+  [q<htt:foo:bar@ga>, 'htt', '', undef, undef, undef, undef,
+   undef, 'foo:bar@ga'],
+  [qq<http://\x{5000}hoge/fuga>, 'http', '', undef, 'xn--hoge-pc7f', undef, undef,
+   'xn--hoge-pc7f', '/fuga'],
+  [q<http://123.44.000.01/fuga>, 'http', '', undef, '123.44.0.1', undef, undef,
+   '123.44.0.1', '/fuga'],
+  [q<ftp://foo.bar>, 'ftp', '', undef, 'foo.bar', undef, undef,
+   'foo.bar', '/'],
+  [q<ftp://foo.bar?ab%4a>, 'ftp', '', undef, 'foo.bar', undef, 'ab%4a',
+   'foo.bar', '/?ab%4a'],
+  [q<ftp://foo.bar/abc?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, 'foo=bar',
+   'foo.bar', '/abc?foo=bar'],
+#XXX
+#  [q<about:hoge?fuga#abc>, 'about', '', undef, 'fuga',
+#   undef, 'hoge?fuga'],
 ) {
-  my ($input, $scheme, $username, $password, $host, $port,
+  my ($input, $scheme, $username, $password, $host, $port, $query,
       $hostport, $pathquery) = @$_;
   test {
     my $c = shift;
@@ -103,10 +116,11 @@ for (
     is $url->password, $password;
     is $url->host, $host;
     is $url->port, $port;
+    is $url->query, $query;
     is $url->hostport, $hostport;
     is $url->pathquery, $pathquery;
     done $c;
-  } n => 7, name => $input;
+  } n => 8, name => $input;
 }
 
 test {

@@ -43,6 +43,10 @@ sub pathquery ($) {
   return $_[0]->{path} . (defined $_[0]->{query} ? '?' . $_[0]->{query} : '');
 } # pathquery
 
+sub query ($) {
+  return $_[0]->{query}; # or undef
+} # query
+
 sub set_query_params ($$;%) {
   my ($self, $params, %args) = @_;
   if ($args{append}) {

@@ -61,6 +61,10 @@ C<undef>.
 
 Serialize the path and query components of the URL.
 
+=item $string = $url->query
+
+Return the query component of the URL, if any, or C<undef>.
+
 =item $url->set_query_params ($params, append => $boolean)
 
 Set the query parameters, in the C<application/x-www-form-urlencoded>
