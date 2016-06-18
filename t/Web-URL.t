@@ -7,14 +7,23 @@ use Test::X1;
 use Web::URL;
 
 for (
-  [q<http://hoge/fuga?abc#fee>, undef, q<http://hoge/fuga?abc#fee>, q<http://hoge/fuga?abc>],
-  [q<../foha/gw#a%41br>, q<http://foo/bar/baz?aa>, q<http://foo/foha/gw#a%41br>, q<http://foo/foha/gw>],
-  [q<ABOU:Blank#a>, undef, q<abou:Blank#a>, q<abou:Blank>],
-  [q<HTTPS://FOO:013>, undef, q<https://foo:13/>, q<https://foo:13/>],
-  [q<http://hoge:fuga>, undef, undef, undef],
-  [q<http:hoge>, q<http://foo/bar>, q<http://foo/hoge>, q<http://foo/hoge>],
+  [q<http://hoge/fuga?abc#fee>, undef,
+   q<http://hoge/fuga?abc#fee>, q<http://hoge/fuga?abc>,
+   q<http://hoge/fuga>, q<http://hoge/fuga?abc>],
+  [q<../foha/gw#a%41br>, q<http://foo/bar/baz?aa>,
+   q<http://foo/foha/gw#a%41br>, q<http://foo/foha/gw>,
+   q<http://foo/foha/gw>, q<http://foo/foha/gw>],
+  [q<ABOU:Blank#a>, undef,
+   q<abou:Blank#a>, q<abou:Blank>, q<abou:Blank>, q<abou:Blank>],
+  [q<HTTPS://FOO:013>, undef,
+   q<https://foo:13/>, q<https://foo:13/>,
+   q<https://foo:13/>, q<https://foo:13/>],
+  [q<http://hoge:fuga>, undef, undef, undef, undef, undef],
+  [q<http:hoge>, q<http://foo/bar>,
+   q<http://foo/hoge>, q<http://foo/hoge>,
+   q<http://foo/hoge>, q<http://foo/hoge>],
 ) {
-  my ($input, $base, $expected, $expected2) = @$_;
+  my ($input, $base, $expected, $expected2, $expected3, $expected4) = @$_;
   test {
     my $c = shift;
 
@@ -22,16 +31,20 @@ for (
     my $url = Web::URL->parse_string ($input, $base);
     if (defined $expected) {
       isa_ok $url, 'Web::URL';
+      is $url->originpath, $expected3;
+      is $url->originpathquery, $expected4;
       is $url->stringify, $expected;
       is $url->stringify_without_fragment, $expected2;
     } else {
       is $url, undef;
       ok 1;
       ok 1;
+      ok 1;
+      ok 1;
     }
 
     done $c;
-  } n => 3;
+  } n => 5;
 }
 
 for (

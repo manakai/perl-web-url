@@ -81,6 +81,21 @@ sub stringify ($) {
   return serialize_parsed_url $_[0];
 } # stringify
 
+sub originpath ($) {
+  local $_[0]->{user} = undef;
+  local $_[0]->{password} = undef;
+  local $_[0]->{query} = undef;
+  local $_[0]->{fragment} = undef;
+  return serialize_parsed_url $_[0];
+} # originpath
+
+sub originpathquery ($) {
+  local $_[0]->{user} = undef;
+  local $_[0]->{password} = undef;
+  local $_[0]->{fragment} = undef;
+  return serialize_parsed_url $_[0];
+} # originpathquery
+
 sub stringify_without_fragment ($) {
   local $_[0]->{fragment} = undef;
   return serialize_parsed_url $_[0];

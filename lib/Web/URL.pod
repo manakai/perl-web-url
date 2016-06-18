@@ -89,6 +89,22 @@ Serialize the URL record as a string.
 Serialize the URL record as a string, excluding any fragment
 component.
 
+=item $string = $url->originpathquery
+
+Serialize the URL record as a string, excluding any C<userinfo> and
+fragment components.
+
+This method can be used to obtain a value for HTTP request-target or
+C<Referer:> and C<document.referrer>.
+
+=item $string = $url->originpath
+
+Serialize the URL record as a string, excluding any C<userinfo>,
+query, and fragment components.
+
+This method can be used to obtain a value for OAuth 1.0 signature
+generation.
+
 =item $url2 = $url->clone
 
 Create another URL record object which has the same components as the
