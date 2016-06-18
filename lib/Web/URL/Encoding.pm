@@ -48,6 +48,14 @@ sub serialize_form_urlencoded ($) {
   } sort { $a cmp $b } keys %$params;
 } # serialize_form_urlencoded
 
+## RFC 5849 3.6.
+push @EXPORT, qw(oauth1_percent_encode_c);
+sub oauth1_percent_encode_c ($) {
+  my $s = encode_web_utf8 $_[0];
+  $s =~ s/([^0-9A-Za-z._~-])/sprintf '%%%02X', ord $1/ge;
+  return $s;
+} # oauth1_percent_encode_c
+
 1;
 
 =head1 LICENSE

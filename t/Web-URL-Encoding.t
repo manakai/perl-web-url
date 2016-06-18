@@ -15,16 +15,16 @@ sub _flagged ($) {
 } # _flagged
 
 for (
-      [undef, '', ''],
-      ['' => '', ''],
-      ['abc' => 'abc', 'abc'],
-      [_flagged 'abc' => 'abc', 'abc'],
-      ["\xA1\xC8\x4E\x4B\x21\x0D" => '%A1%C8NK%21%0D', '%C2%A1%C3%88NK%21%0D'],
-      ["http://abc/a+b?x(y)z~[*]" => 'http%3A%2F%2Fabc%2Fa%2Bb%3Fx%28y%29z%7E%5B%2A%5D', 'http%3A%2F%2Fabc%2Fa%2Bb%3Fx%28y%29z%7E%5B%2A%5D'],
-      ["\x{4e00}\xC1" => '%4E00%C1', '%E4%B8%80%C3%81'],
-      ["ab+cd" => 'ab%2Bcd', 'ab%2Bcd'],
+      [undef, '', '', ''],
+      ['' => '', '', ''],
+      ['abc' => 'abc', 'abc', 'abc'],
+      [_flagged 'abc' => 'abc', 'abc', 'abc'],
+      ["\xA1\xC8\x4E\x4B\x21\x0D" => '%A1%C8NK%21%0D', '%C2%A1%C3%88NK%21%0D', '%C2%A1%C3%88NK%21%0D'],
+      ["http://abc/a+b?x(y)z~[*]" => 'http%3A%2F%2Fabc%2Fa%2Bb%3Fx%28y%29z%7E%5B%2A%5D', 'http%3A%2F%2Fabc%2Fa%2Bb%3Fx%28y%29z%7E%5B%2A%5D', 'http%3A%2F%2Fabc%2Fa%2Bb%3Fx%28y%29z~%5B%2A%5D'],
+      ["\x{4e00}\xC1" => '%4E00%C1', '%E4%B8%80%C3%81', '%E4%B8%80%C3%81'],
+      ["ab+cd" => 'ab%2Bcd', 'ab%2Bcd', 'ab%2Bcd'],
 ) {
-  my ($input, $o1, $o2) = @$_;
+  my ($input, $o1, $o2, $o3) = @$_;
   test {
     my $c = shift;
 
@@ -36,8 +36,12 @@ for (
     is $t, $o2;
     ok !utf8::is_utf8 ($t);
 
+    my $u = oauth1_percent_encode_c ($input);
+    is $u, $o3;
+    ok !utf8::is_utf8 ($u);
+
     done $c;
-  } n => 2;
+  } n => 4;
 }
 
 for (
