@@ -1,0 +1,76 @@
+=head1 NAME
+
+Web::Host - Host names for the Web
+
+=head1 SYNOPSIS
+
+  use Web::Host;
+  $host = Web::Host->parse_string ("MyDomain.test");
+  warn $host->is_domain;
+  warn $host->is_ip;
+  warn $host->stringify;
+
+=head1 DESCRIPTION
+
+The C<Web::Host> object represents a host, i.e. a domain, an IPv4
+address, or an IPv6 address.
+
+=head1 METHODS
+
+Following methods are available:
+
+=over 4
+
+=item $host = Web::Host->parse_string ($string)
+
+Parse the string and return a C<Web::Host> object for the host.  The
+argument must be a domain, an IPv4 address, or an IPv6 address
+enclosed by C<[> and C<]>.  It does not have to be canonicalized.  It
+can be an IDN.  If the argument is not a valid host, an C<undef> value
+is returned instead.
+
+=item $boolean = $host->is_domain
+
+Return whether the host is a domain or not.
+
+=item $boolean = $host->is_ip
+
+Return whether the host is an IP address or not.
+
+=item $boolean = $host->is_ipv4
+
+Return whether the host is an IPv4 address or not.
+
+=item $boolean = $host->is_ipv6
+
+Return whether the host is an IPv6 address or not.
+
+=item $host1->equals ($host2)
+
+Return whether two hosts are equal or not.  They are equal if and only
+if their serializations are equal, by definition.
+
+=item $string = $host->stringify
+
+Serialize the host, using the host serializer of the URL Standard.
+The result is canonicalized.  Any IDN is converted into its Punycode
+form.  IPv6 addresses are enclosed in C<[> and C<]>.
+
+=back
+
+=head1 SPECIFICATION
+
+URL Standard <https://url.spec.whatwg.org/>.
+
+=head1 AUTHOR
+
+Wakaba <wakaba@suikawiki.org>.
+
+=head1 LICENSE
+
+Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

@@ -114,7 +114,11 @@ for (
     is $url->scheme, $scheme;
     is $url->username, $username;
     is $url->password, $password;
-    is $url->host, $host;
+    if (defined $url->host) {
+      is $url->host->stringify, $host;
+    } else {
+      is $url->host, undef;
+    }
     is $url->port, $port;
     is $url->query, $query;
     is $url->hostport, $hostport;
@@ -167,6 +171,33 @@ test {
   is $url->stringify, q<http://foo.bar/baz/abc?a&%C3%BE+%2B=%E5%80%80+%2B#x>;
   done $c;
 } n => 1, name => 'set_query_params';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<https://hoge.fuga.>);
+  isa_ok $url->host, 'Web::Host';
+  is $url->host->stringify, 'hoge.fuga.';
+  ok $url->host->is_domain;
+  done $c;
+} n => 3, name => 'host';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<https://[::]/foo>);
+  isa_ok $url->host, 'Web::Host';
+  is $url->host->stringify, '[::]';
+  ok $url->host->is_ipv6;
+  done $c;
+} n => 3, name => 'host';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<https://454>);
+  isa_ok $url->host, 'Web::Host';
+  is $url->host->stringify, '0.0.1.198';
+  ok $url->host->is_ipv4;
+  done $c;
+} n => 3, name => 'host';
 
 run_tests;
 

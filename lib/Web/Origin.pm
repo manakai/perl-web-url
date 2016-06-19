@@ -2,6 +2,7 @@ package Web::Origin;
 use strict;
 use warnings;
 our $VERSION = '1.0';
+use Carp qw(croak);
 use Web::URL::Canonicalize qw(serialize_parsed_url);
 
 sub new_opaque ($) {
@@ -21,7 +22,8 @@ sub is_opaque ($) {
 } # is_opaque
 
 sub set_domain ($;$) {
-  return undef unless defined $_[0]->{scheme};
+  croak "The host is not a domain" unless $_[1]->is_domain;
+  croak "Can't set domain of an opaque origin" unless defined $_[0]->{scheme};
   $_[0]->{domain} = $_[1];
 } # set_domain
 
@@ -58,7 +60,7 @@ sub same_origin_domain_as ($$) {
     } else {
       if (defined $_[0]->{domain} and defined $_[1]->{domain}) {
         return ($_[0]->{scheme} eq $_[1]->{scheme} and
-                $_[0]->{domain} eq $_[1]->{domain});
+                $_[0]->{domain}->equals ($_[1]->{domain}));
       } elsif (not defined $_[0]->{domain} and not defined $_[1]->{domain}) {
         return ($_[0]->{scheme} eq $_[1]->{scheme} and
                 $_[0]->{host} eq $_[1]->{host} and

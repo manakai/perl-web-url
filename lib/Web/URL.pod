@@ -43,10 +43,9 @@ username component, the empty string is returned.
 
 Return the password component of the URL, if any, or C<undef>.
 
-=item $string = $url->host
+=item $host = $url->host
 
-Return the host component of the URL, canonicalized, if any, or
-C<undef>.
+Return the host (L<Web::Host>) of the URL, if any, or C<undef>.
 
 =item $string = $url->port
 

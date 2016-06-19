@@ -42,10 +42,10 @@ Return an opaque origin.
 Return whether the origin is an opaque origin (true) or tuple origin
 (false).
 
-=item $origin->set_domain ($domain)
+=item $origin->set_domain ($host)
 
 Set the domain of the origin.  The origin must be a tuple origin.  The
-argument must be a canonicalized domain string.
+argument must be a host (L<Web::Host>) that is a domain.
 
 =item $boolean = $origin1->same_origin_as ($origin2)
 

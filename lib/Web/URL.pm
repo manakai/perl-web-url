@@ -2,6 +2,7 @@ package Web::URL;
 use strict;
 use warnings;
 our $VERSION = '1.0';
+use Web::Host;
 use Web::URL::_Defs;
 use Web::URL::Canonicalize qw(serialize_parsed_url parse_url resolve_url canonicalize_parsed_url);
 use Web::URL::Encoding qw(serialize_form_urlencoded);
@@ -11,6 +12,8 @@ sub parse_string ($$;$) {
   $url = canonicalize_parsed_url $url, undef;
   return undef if $url->{invalid};
 
+  $url->{host_parsed} = Web::Host->parse_string ($url->{host})
+      if defined $url->{host};
   return bless $url, $_[0];
 } # parse_string
 
@@ -27,7 +30,7 @@ sub password ($) {
 } # password
 
 sub host ($) {
-  return $_[0]->{host}; # or undef
+  return $_[0]->{host_parsed}; # or undef
 } # host
 
 sub port ($) {
@@ -63,6 +66,7 @@ sub set_query_params ($$;%) {
 } # set_query_params
 
 sub clone ($) {
+  # $_[0]->{host_parsed} is immutable
   return bless {%{$_[0]}}, ref $_[0];
 } # clone
 

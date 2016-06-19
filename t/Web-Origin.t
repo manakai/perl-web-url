@@ -5,6 +5,7 @@ use lib glob path (__FILE__)->parent->parent->child ('t_deps/modules/*/lib')->st
 use Test::More;
 use Test::X1;
 use Web::Origin;
+use Web::Host;
 
 test {
   my $c = shift;
@@ -24,9 +25,8 @@ test {
 } n => 7, name => 'opaque origin';
 
 for (
-  ['http', 'hoge.fuga', undef, q<http://hoge.fuga>],
-  ['http', 'hoge.fuga', 62, q<http://hoge.fuga:62>],
   ['https', '127.0.0.1', undef, q<https://127.0.0.1>],
+  ['https', '[::]', undef, q<https://[::]>],
 ) {
   my ($scheme, $host, $port, $ascii) = @$_;
   test {
@@ -43,7 +43,37 @@ for (
     is $origin->to_ascii, $ascii;
 
     my $origin2 = Web::Origin->new_tuple ($scheme, $host, $port);
-    $origin2->set_domain ($host);
+    eval {
+      $origin2->set_domain (Web::Host->parse_string ($host));
+    };
+    like $@, qr{^The host is not a domain};
+    ok $origin->same_origin_as ($origin2);
+    ok $origin->same_origin_domain_as ($origin2);
+
+    done $c;
+  } n => 10, name => 'tuple origin';
+}
+
+for (
+  ['http', 'hoge.fuga', undef, q<http://hoge.fuga>],
+  ['http', 'hoge.fuga', 62, q<http://hoge.fuga:62>],
+) {
+  my ($scheme, $host, $port, $ascii) = @$_;
+  test {
+    my $c = shift;
+
+    my $origin = Web::Origin->new_tuple ($scheme, $host, $port);
+    isa_ok $origin, 'Web::Origin';
+    ok ! $origin->is_opaque;
+    ok $origin->same_origin_as ($origin);
+    ok $origin->same_origin_domain_as ($origin);
+    my $opaque = Web::Origin->new_opaque;
+    ok not $origin->same_origin_as ($opaque);
+    ok not $origin->same_origin_domain_as ($opaque);
+    is $origin->to_ascii, $ascii;
+
+    my $origin2 = Web::Origin->new_tuple ($scheme, $host, $port);
+    $origin2->set_domain (Web::Host->parse_string ($host));
     ok $origin->same_origin_as ($origin2);
     ok ! $origin->same_origin_domain_as ($origin2);
 
@@ -81,8 +111,8 @@ test {
   ok ! $o1->same_origin_as ($o2);
   ok ! $o1->same_origin_domain_as ($o2);
 
-  $o1->set_domain ('foo');
-  $o2->set_domain ('foo');
+  $o1->set_domain (Web::Host->parse_string ('foo'));
+  $o2->set_domain (Web::Host->parse_string ('foo'));
   ok ! $o1->same_origin_as ($o2);
   ok $o1->same_origin_domain_as ($o2);
 
@@ -97,8 +127,8 @@ test {
   ok ! $o1->same_origin_as ($o2);
   ok ! $o1->same_origin_domain_as ($o2);
 
-  $o1->set_domain ('foo');
-  $o2->set_domain ('foo');
+  $o1->set_domain (Web::Host->parse_string ('foo'));
+  $o2->set_domain (Web::Host->parse_string ('foo'));
   ok ! $o1->same_origin_as ($o2);
   ok ! $o1->same_origin_domain_as ($o2);
 
