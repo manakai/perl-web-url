@@ -26,16 +26,17 @@ for (
     ok ! $host->is_ipv6;
     is $host->stringify, $output;
     ok $host->equals ($host);
+    is $host->packed_addr, undef;
     done $c;
-  } n => 7;
+  } n => 8;
 }
 
 for (
-  ['50.0.5.1' => '50.0.5.1'],
-  ['050.0000.24.4' => '40.0.24.4'],
-  ['5234' => '0.0.20.114'],
+  ['50.0.5.1' => '50.0.5.1', "\x32\x00\x05\x01"],
+  ['050.0000.24.4' => '40.0.24.4', "\x28\x00\x18\x04"],
+  ['5234' => '0.0.20.114', "\x00\x00\x14\x72"],
 ) {
-  my ($input, $output) = @$_;
+  my ($input, $output, $poutput) = @$_;
   test {
     my $c = shift;
     my $host = Web::Host->parse_string ($input);
@@ -46,15 +47,26 @@ for (
     ok ! $host->is_ipv6;
     is $host->stringify, $output;
     ok $host->equals ($host);
+    my $packed = $host->packed_addr;
+    is $packed, $poutput;
+    my $host2 = Web::Host->new_from_packed_addr ($packed);
+    isa_ok $host2, 'Web::Host';
+    ok $host2->is_ipv4;
+    ok $host2->equals ($host);
+    is $host2->stringify, $host->stringify;
     done $c;
-  } n => 7;
+  } n => 12;
 }
 
 for (
-  ['[::4]' => '[::4]'],
-  ['[3:4:012:0::4]' => '[3:4:12::4]'],
+  ['[::4]' => '[::4]',
+   "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04"],
+  ['[3:4:012e:0::4]' => '[3:4:12e::4]',
+   "\x00\x03\x00\x04\x01\x2e\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04"],
+  ['[0:123:45:67:89:ab:cd:ef]' => '[0:123:45:67:89:ab:cd:ef]',
+   "\x00\x00\x01\x23\x00\x45\x00\x67\x00\x89\x00\xab\x00\xcd\x00\xef"],
 ) {
-  my ($input, $output) = @$_;
+  my ($input, $output, $poutput) = @$_;
   test {
     my $c = shift;
     my $host = Web::Host->parse_string ($input);
@@ -65,8 +77,15 @@ for (
     ok $host->is_ipv6;
     is $host->stringify, $output;
     ok $host->equals ($host);
+    my $packed = $host->packed_addr;
+    is $packed, $poutput;
+    my $host2 = Web::Host->new_from_packed_addr ($packed);
+    isa_ok $host2, 'Web::Host';
+    ok $host2->is_ipv6;
+    ok $host2->equals ($host);
+    is $host2->stringify, $host->stringify;
     done $c;
-  } n => 7;
+  } n => 12;
 }
 
 for (
@@ -126,6 +145,17 @@ test {
   ok ! $h2->equals ($h1);
   done $c;
 } n => 2, name => 'equals';
+
+test {
+  my $c = shift;
+
+  eval {
+    Web::Host->new_from_packed_addr ("abcde")
+  };
+  like $@, qr{^Input is not a packed IP address};
+
+  done $c;
+} n => 1;
 
 run_tests;
 

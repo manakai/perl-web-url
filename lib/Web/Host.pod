@@ -29,6 +29,12 @@ enclosed by C<[> and C<]>.  It does not have to be canonicalized.  It
 can be an IDN.  If the argument is not a valid host, an C<undef> value
 is returned instead.
 
+=item $host = Web::Host->new_from_packed_addr ($bytes)
+
+Create a C<Web::Host> object for the "packed" IP address.  The
+argument must be a byte string of length 4 or 16.  See also
+C<packed_addr>.
+
 =item $boolean = $host->is_domain
 
 Return whether the host is a domain or not.
@@ -55,6 +61,13 @@ if their serializations are equal, by definition.
 Serialize the host, using the host serializer of the URL Standard.
 The result is canonicalized.  Any IDN is converted into its Punycode
 form.  IPv6 addresses are enclosed in C<[> and C<]>.
+
+=item $bytes = $host->packed_addr
+
+Return the "packed" representation of the IP address, i.e. bytes of
+length 4 (if IPv4 address) or 16 (if IPv6 address) representing the
+address in network byte order (big endian).  If the host is a domain,
+C<undef> is returned instead.
 
 =back
 
