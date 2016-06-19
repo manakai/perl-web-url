@@ -54,6 +54,16 @@ sub packed_addr ($) {
   return undef;
 } # packed_addr
 
+sub text_addr ($) {
+  if (defined $_[0]->{ipv6}) {
+    return $_[0]->{ipv6};
+  } elsif (defined $_[0]->{ipv4}) {
+    return $_[0]->{ipv4};
+  } else {
+    return undef;
+  }
+} # text_addr
+
 sub equals ($$) {
   return $_[0]->stringify eq $_[1]->stringify;
 } # equals

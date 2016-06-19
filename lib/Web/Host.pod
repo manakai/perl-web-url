@@ -69,6 +69,13 @@ length 4 (if IPv4 address) or 16 (if IPv6 address) representing the
 address in network byte order (big endian).  If the host is a domain,
 C<undef> is returned instead.
 
+=item $string = $host->text_addr
+
+Return the textual representation of the IP address, serialized using
+the IPv4 or IPv6 serializer of the URL Standard.  The result is
+canonicalized.  IPv6 addresses are I<not> enclosed by C<[> and C<]>.
+If the host is a domain, C<undef> is returned instead.
+
 =back
 
 =head1 SPECIFICATION

@@ -27,8 +27,9 @@ for (
     is $host->stringify, $output;
     ok $host->equals ($host);
     is $host->packed_addr, undef;
+    is $host->text_addr, undef;
     done $c;
-  } n => 8;
+  } n => 9;
 }
 
 for (
@@ -46,6 +47,7 @@ for (
     ok $host->is_ipv4;
     ok ! $host->is_ipv6;
     is $host->stringify, $output;
+    is $host->text_addr, $output;
     ok $host->equals ($host);
     my $packed = $host->packed_addr;
     is $packed, $poutput;
@@ -55,7 +57,7 @@ for (
     ok $host2->equals ($host);
     is $host2->stringify, $host->stringify;
     done $c;
-  } n => 12;
+  } n => 13;
 }
 
 for (
@@ -76,6 +78,7 @@ for (
     ok ! $host->is_ipv4;
     ok $host->is_ipv6;
     is $host->stringify, $output;
+    is "[".$host->text_addr."]", $output;
     ok $host->equals ($host);
     my $packed = $host->packed_addr;
     is $packed, $poutput;
@@ -85,7 +88,7 @@ for (
     ok $host2->equals ($host);
     is $host2->stringify, $host->stringify;
     done $c;
-  } n => 12;
+  } n => 13;
 }
 
 for (
