@@ -156,13 +156,13 @@ our $BROWSER = $ENV{TEST_BROWSER} || 'this';
 
 sub __canon (@) {
   for my $f (@_) {
-    test {
-      my $c = shift;
-      for_each_test $f->stringify, {
-        data => {is_prefixed => 1},
-        path => {is_prefixed => 1},
-      }, sub ($) {
-        my $test = shift;
+    for_each_test $f->stringify, {
+      data => {is_prefixed => 1},
+      path => {is_prefixed => 1},
+    }, sub ($) {
+      my $test = shift;
+      test {
+        my $c = shift;
         my $result = {};
         for (qw(
           scheme user password host port path query fragment invalid
@@ -246,23 +246,21 @@ sub __canon (@) {
               . $resolved_url->{path};
           delete $resolved_url->{drive};
         }
+        test {
 #line 1 "_canon"
-        eq_or_diff $resolved_url, $result,
-            $test->{data}->[0] . ' - ' . $base_url .
-            ($charset ? ' - ' . $charset : '');
+          eq_or_diff $resolved_url, $result;
 
-        if ($BROWSER eq 'this' and defined $url) {
-          my $resolved_url2 = resolve_url $url, $resolved_base_url;
-          canonicalize_parsed_url $resolved_url2, $charset;
-          my $url2 = serialize_parsed_url $resolved_url2;
+          if ($BROWSER eq 'this' and defined $url) {
+            my $resolved_url2 = resolve_url $url, $resolved_base_url;
+            canonicalize_parsed_url $resolved_url2, $charset;
+            my $url2 = serialize_parsed_url $resolved_url2;
 #line 1 "_canon_idempotent"
-          eq_or_diff $url2, $url,
-              $test->{data}->[0] . ' - ' . $base_url .
-              ($charset ? ' - ' . $charset : '') . ' idempotency';
-        }
-      };
-      done $c;
-    } name => ['canon', $f->stringify];
+            eq_or_diff $url2, $url, 'idempotency';
+          }
+        } $c, name => [$base_url, $charset];
+        done $c;
+      } name => ['canon', $f->stringify, $test->{data}->[0]];
+    };
   } # $f
 } # __canon
 
