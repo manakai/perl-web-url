@@ -12,6 +12,7 @@ use Web::URL::Canonicalize qw(
   url_to_canon_url url_to_canon_parsed_url
   parse_url resolve_url canonicalize_parsed_url serialize_parsed_url
 );
+use Web::Domain::Canonicalize qw(canonicalize_url_host);
 
 use Data::Dumper;
 {
@@ -246,6 +247,16 @@ sub __canon (@) {
               . $resolved_url->{path};
           delete $resolved_url->{drive};
         }
+
+        my $v = $test->data->[0];
+        $v =~ s{^http://}{};
+        $v =~ s{/$}{};
+        test {
+          my $w = canonicalize_url_host $v;
+          is $w, 'XXX';
+        } $c, name => [$v, 'host'];
+
+
         test {
 #line 1 "_canon"
           eq_or_diff $resolved_url, $result;
