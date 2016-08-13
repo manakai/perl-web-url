@@ -2,8 +2,8 @@ git:
   submodules: false
 language: perl
 before_install: git submodule update --init
-install: "PMBP_PERL_VERSION=5.14.2 make deps"
-script: "PMBP_PERL_VERSION=5.14.2 make test"
+install: "make deps"
+script: "make test"
 notifications:
   email:
     - wakaba@suikawiki.org

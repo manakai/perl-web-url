@@ -71,7 +71,7 @@ show-unicore-version: deps
 	$(PERL) -e 'print [grep { -f $$_ } map { "$$_/unicore/version" } @INC]->[0]' | xargs cat
 
 test-main:
-	cd t && $(MAKE) test
+	TEST_METHOD=\\[444\\] $(PERL) t/web-url-canonicalize.t
 
 always:
 
