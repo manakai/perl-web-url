@@ -42,6 +42,10 @@ sub hostport ($) {
   return $_[0]->{host} . (defined $_[0]->{port} ? ':' . $_[0]->{port} : '');
 } # hostport
 
+sub path ($) {
+  return $_[0]->{path};
+} # path
+
 sub pathquery ($) {
   return $_[0]->{path} . (defined $_[0]->{query} ? '?' . $_[0]->{query} : '');
 } # pathquery

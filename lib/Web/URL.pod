@@ -56,6 +56,10 @@ Return the port component of the URL, if any, or C<undef>.
 Serialize the host and port components of the URL, if any, or
 C<undef>.
 
+=item $string = $url->path
+
+Serialize the path component of the URL.
+
 =item $string = $url->pathquery
 
 Serialize the path and query components of the URL.
