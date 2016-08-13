@@ -12,7 +12,7 @@ use Web::URL::Canonicalize qw(
   url_to_canon_url url_to_canon_parsed_url
   parse_url resolve_url canonicalize_parsed_url serialize_parsed_url
 );
-use Web::Domain::Canonicalize qw(canonicalize_url_host);
+use Web::DomainName::Canonicalize qw(canonicalize_url_host);
 
 use Data::Dumper;
 {
