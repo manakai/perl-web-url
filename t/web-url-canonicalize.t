@@ -236,6 +236,17 @@ sub __canon (@) {
         $base_url = $test->{data}->[0] unless length $base_url;
         $result->{canon} = $test->{data}->[0]
             if not defined $result->{canon} and not $result->{invalid};
+
+        ok 1, 1;
+        my $v = $test->data->[0];
+        $v =~ s{^http://}{};
+        $v =~ s{/$}{};
+        test {
+          my $w = canonicalize_url_host $v;
+          is $w, 'XXX';
+        } $c, name => [$v, 'host'];
+        ok 1, 2;
+
         my $resolved_base_url = parse_url $base_url;
         my $resolved_url = resolve_url $test->{data}->[0], $resolved_base_url;
         canonicalize_parsed_url $resolved_url, $charset;
@@ -248,13 +259,6 @@ sub __canon (@) {
           delete $resolved_url->{drive};
         }
 
-        my $v = $test->data->[0];
-        $v =~ s{^http://}{};
-        $v =~ s{/$}{};
-        test {
-          my $w = canonicalize_url_host $v;
-          is $w, 'XXX';
-        } $c, name => [$v, 'host'];
 
 
         test {
