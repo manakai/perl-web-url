@@ -239,11 +239,23 @@ sub __canon (@) {
 
         ok 1, 1;
         my $v = $test->data->[0];
+        ok 1, $v;
         $v =~ s{^http://}{};
         $v =~ s{/$}{};
+        ok 1, $v;
         test {
-          my $w = canonicalize_url_host $v;
-          is $w, 'XXX';
+          my $s = $v;
+          $s = Web::Encoding::encode_web_utf8 $s;
+          ok 1, 4;
+          $s =~ s{%([0-9A-Fa-f]{2})}{pack 'C', hex $1}ge;
+          ok 1, 5;
+          $s = Web::Encoding::decode_web_utf8 $s;
+          ok 1, 6;
+
+          $s = Web::DomainName::Canonicalize::canonicalize_domain_name $s;
+          ok 1, 7;
+
+          is $s, 'XXX';
         } $c, name => [$v, 'host'];
         ok 1, 2;
 
