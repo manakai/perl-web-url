@@ -141,16 +141,9 @@ sub canonicalize_url_host ($;%) {
 
   return undef if $s =~ m{^%5[Bb]};
 
-#XXX
-  use Devel::Peek;
-warn "1: ", Dump $s;
-
   $s = encode_web_utf8 $s;
-warn "2: ", Dump $s;
   $s =~ s{%([0-9A-Fa-f]{2})}{pack 'C', hex $1}ge;
-warn "3: ", Dump $s;
   $s = decode_web_utf8 $s;
-warn "4: ", Dump $s;
 
   $s = canonicalize_domain_name $s;
   return undef unless defined $s;
