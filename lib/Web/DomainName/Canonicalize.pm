@@ -96,6 +96,10 @@ sub canonicalize_domain_name ($) {
   my $s = $_[0];
   return undef unless defined $s;
 
+#XXX
+  use Devel::Peek;
+warn Dump $s;
+
   my $need_punycode = $s =~ /[^\x00-\x7F]/;
 
   $s = _nameprep $s;
