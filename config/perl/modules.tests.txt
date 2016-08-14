@@ -1,5 +1,5 @@
 Data::Dumper
-Path::Class
+Path::Tiny
 Test::Builder
 Test::Differences
 Test::More

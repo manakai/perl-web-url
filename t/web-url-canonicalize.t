@@ -1,9 +1,9 @@
 use strict;
 use warnings;
-use Path::Class;
-use lib file (__FILE__)->dir->parent->subdir ('lib')->stringify;
-use lib glob file (__FILE__)->dir->parent->subdir ('modules', '*', 'lib')->stringify;
-use lib glob file (__FILE__)->dir->parent->subdir ('t_deps', 'modules', '*', 'lib')->stringify;
+use Path::Tiny;
+use lib path (__FILE__)->parent->parent->child ('lib')->stringify;
+use lib glob path (__FILE__)->parent->parent->child ('modules', '*', 'lib')->stringify;
+use lib glob path (__FILE__)->parent->parent->child ('t_deps', 'modules', '*', 'lib')->stringify;
 use Test::X1;
 use Test::More;
 use Test::Differences;
@@ -33,10 +33,10 @@ binmode $builder->todo_output,    ":utf8";
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
-my $data_d = file (__FILE__)->dir->subdir ('data');
-my $parse_data_f = $data_d->file ('parsing.dat');
-my $resolve_data_f = $data_d->file ('resolving.dat');
-my @decomps_data_f = (map { $data_d->file ($_) } qw(
+my $data_d = path (__FILE__)->parent->child ('data');
+my $parse_data_f = $data_d->child ('parsing.dat');
+my $resolve_data_f = $data_d->child ('resolving.dat');
+my @decomps_data_f = (map { $data_d->child ($_) } qw(
 
 decomps-authority-domain.dat  decomps-file.dat        decomps-query.dat
 decomps-authority-ipv4.dat    decomps-fragment.dat    decomps-relative.dat
@@ -48,7 +48,7 @@ decomps-about.dat decomps-ftp.dat
 
 ));
 
-my @decomps_data_bc_f = (map { $data_d->file ($_) } qw(
+my @decomps_data_bc_f = (map { $data_d->child ($_) } qw(
 
 generated/decomps-authority-stringprep-b1-pe.dat
 generated/decomps-authority-stringprep-b1.dat
@@ -78,7 +78,7 @@ generated/decomps-authority-stringprep-c9-pe-1.dat
 
 my @decomps_data_a_f;
 push @decomps_data_a_f,
-    map { $data_d->file ($_) }
+    map { $data_d->child ($_) }
     qq(generated/decomps-authority-stringprep-a1-$_.dat) for 1..94;
 
 {

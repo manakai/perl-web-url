@@ -1,9 +1,9 @@
 use strict;
 use warnings;
-use Path::Class;
-use lib file (__FILE__)->dir->parent->subdir ('lib')->stringify;
-use lib glob file (__FILE__)->dir->parent->subdir ('modules', '*', 'lib')->stringify;
-use lib glob file (__FILE__)->dir->parent->subdir ('t_deps', 'modules', '*', 'lib')->stringify;
+use Path::Tiny;
+use lib path (__FILE__)->parent->parent->child ('lib')->stringify;
+use lib glob path (__FILE__)->parent->parent->child ('modules', '*', 'lib')->stringify;
+use lib glob path (__FILE__)->parent->parent->child ('t_deps', 'modules', '*', 'lib')->stringify;
 use Test::X1;
 use Test::Differences;
 use Web::URL::Checker;
@@ -399,7 +399,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2007-2013 Wakaba <wakaba@suikawiki.org>.
+Copyright 2007-2016 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

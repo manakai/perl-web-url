@@ -37,7 +37,4 @@ results/web-url-parser-misc.txt: web-url-canonicalize.t \
   data/*.dat
 	-TEST_METHOD="_parse|_resolve" perl $< &> $@
 
-test:
-	../prove *.t
-
 ## License: Public Domain.

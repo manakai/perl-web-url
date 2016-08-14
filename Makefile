@@ -16,6 +16,10 @@ updatenightly: clean local/bin/pmbp.pl build
 
 WGET = wget
 
+PERL = ./perl
+PERLT = $(PERL)
+PERLT = ./prove
+
 deps: git-submodules pmbp-install
 
 local/bin/pmbp.pl:
@@ -50,14 +54,12 @@ local/tlds.json:
 local/url-schemes.json:
 	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-web-defs/master/data/url-schemes.json
 
-lib/Web/DomainName/IDNEnabled.pm: local/tlds.json bin/idnenabled.pl
-	$(PERL) bin/idnenabled.pl > $@
+lib/Web/DomainName/IDNEnabled.pm: bin/idnenabled.pl local/tlds.json
+	$(PERLT) $< > $@
 lib/Web/URL/_Defs.pm: bin/generate-url-defs.pl local/url-schemes.json
-	$(PERL) $< > $@
+	$(PERLT) $< > $@
 
 ## ------ Tests ------
-
-PERL = ./perl
 
 test: test-deps show-perl-version show-unicore-version test-main
 
@@ -71,7 +73,7 @@ show-unicore-version: deps
 	$(PERL) -e 'print [grep { -f $$_ } map { "$$_/unicore/version" } @INC]->[0]' | xargs cat
 
 test-main:
-	cd t && $(MAKE) test
+	$(PROVE) t/*.t
 
 always:
 
