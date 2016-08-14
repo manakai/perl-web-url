@@ -18,7 +18,7 @@ WGET = wget
 
 PERL = ./perl
 PERLT = $(PERL)
-PERLT = ./prove
+PROVE = ./prove
 
 deps: git-submodules pmbp-install
 
