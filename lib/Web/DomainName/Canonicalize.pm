@@ -5,8 +5,8 @@ no warnings 'utf8';
 our $VERSION = '1.0';
 use Carp;
 use Web::Encoding;
+use Web::Encoding::Normalization;
 use Char::Prop::Unicode::BidiClass;
-use Unicode::Normalize;
 use Unicode::Stringprep;
 use Web::IPAddr::Canonicalize;
 use Web::DomainName::Punycode qw(encode_punycode);
@@ -64,10 +64,10 @@ sub _nameprep ($) {
   $label = _nameprep_mapping ($label);
 
   my $has_unassigned = not eval { _nameprep_unassigned ($label); 1 };
-  $label = NFKC ($label);
+  $label = to_nfkc ($label);
   if ($has_unassigned) {
     $label = _nameprep_mapping ($label);
-    $label = NFKC $label;
+    $label = to_nfkc $label;
   }
   
   return undef if not eval { _nameprep_prohibited ($label); 1 };

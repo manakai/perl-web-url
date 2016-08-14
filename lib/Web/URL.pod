@@ -123,6 +123,11 @@ URL record.
 
 URL Standard <https://url.spec.whatwg.org/>.
 
+However, the URL parsing does not support URL Standard yet; the old
+spec implemented by the current version of the URL parser module is
+available at
+<https://github.com/wakaba/tests-web-url/blob/master/spec.txt>.
+
 =head1 AUTHOR
 
 Wakaba <wakaba@suikawiki.org>.

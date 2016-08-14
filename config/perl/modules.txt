@@ -1,3 +1,2 @@
 Carp
-Unicode::Normalize
 Unicode::Stringprep
