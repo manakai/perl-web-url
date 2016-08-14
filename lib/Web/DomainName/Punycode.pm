@@ -2,7 +2,6 @@ package Web::DomainName::Punycode;
 use strict;
 use warnings;
 our $VERSION = '2.0';
-use Encode;
 use Exporter::Lite;
 
 our @EXPORT = qw(encode_punycode decode_punycode);

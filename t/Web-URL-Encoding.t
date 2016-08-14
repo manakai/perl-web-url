@@ -4,7 +4,6 @@ use Path::Tiny;
 use lib glob path (__FILE__)->parent->parent->child ('t_deps/modules/*/lib')->stringify;
 use Test::More;
 use Test::X1;
-use Encode;
 use Web::URL::Encoding;
 
 sub _flagged ($) {

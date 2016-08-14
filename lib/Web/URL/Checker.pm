@@ -1,8 +1,8 @@
 package Web::URL::Checker;
 use strict;
 use warnings;
-our $VERSION = '8.0';
-use Encode;
+our $VERSION = '9.0';
+use Web::Encoding;
 
 # XXX URL Standard support
 
@@ -391,7 +391,7 @@ sub get_uri_reference ($) {
 } # get_uri_reference
 
 sub get_uri_reference_3986 ($) {
-  my $v = Encode::encode ('utf8', $_[0]->{value});
+  my $v = encode_web_utf8 $_[0]->{value};
   $v =~ s/([<>"{}|\\\^`\x00-\x20\x7E-\xFF])/sprintf '%%%02X', ord $1/ge;
   return $v;
 } # get_uri_reference_3986
@@ -401,7 +401,7 @@ sub get_iri_reference ($) {
 } # get_iri_reference
 
 sub get_iri_reference_3987 ($) {
-  my $v = Encode::encode ('utf8', $_[0]->{value});
+  my $v = encode_web_utf8 $_[0]->{value};
   $v =~ s{%([2-9A-Fa-f][0-9A-Fa-f])}
          {
            my $ch = hex $1;
@@ -449,7 +449,7 @@ sub get_iri_reference_3987 ($) {
       $c =~ s/(.)/sprintf '%%%02X', ord $1/ge;
       $c;
     } else {
-      my $ch = Encode::decode ('utf8', $c);
+      my $ch = decode_web_utf8 $c;
       if ($ch =~ /^[\x{00A0}-\x{200D}\x{2010}-\x{2029}\x{202F}-\x{D7FF}\x{F900}-\x{FDCF}\x{FDF0}-\x{FFEF}\x{10000}-\x{1FFFD}\x{20000}-\x{2FFFD}\x{30000}-\x{3FFFD}\x{40000}-\x{4FFFD}\x{50000}-\x{5FFFD}\x{60000}-\x{6FFFD}\x{70000}-\x{7FFFD}\x{80000}-\x{8FFFD}\x{90000}-\x{9FFFD}\x{A0000}-\x{AFFFD}\x{B0000}-\x{BFFFD}\x{C0000}-\x{CFFFD}\x{D0000}-\x{DFFFD}\x{E1000}-\x{EFFFD}]/) {
         $c;
       } else {
@@ -459,7 +459,7 @@ sub get_iri_reference_3987 ($) {
     }
   }gex;
   $v =~ s/([<>"{}|\\\^`\x00-\x20\x7F])/sprintf '%%%02X', ord $1/ge;
-  return Encode::decode ('utf8', $v);
+  return decode_web_utf8 $v;
 } # get_iri_reference_3987
 
 sub get_absolute_reference ($$;%) {
@@ -751,7 +751,7 @@ sub check_iri_reference_3987 ($) {
   my $scheme = $self->_uri_scheme;
   my $scheme_canon;
   if (defined $scheme) {
-    $scheme_canon = Encode::encode ('utf8', $scheme);
+    $scheme_canon = encode_web_utf8 $scheme;
     $scheme_canon =~ s/%([0-9A-Fa-f][0-9A-Fa-f])/pack 'C', hex $1/ge;
     if ($scheme_canon =~ tr/A-Z/a-z/) {
       $self->onerror->(type => 'URL:uppercase scheme name',
@@ -796,7 +796,7 @@ sub check_iri_reference_3987 ($) {
     if ($host =~ /^\[/) {
       #
     } else {
-      my $host_np = Encode::encode ('utf8', $host);
+      my $host_np = encode_web_utf8 $host;
       $host_np =~ s/%([0-9A-Fa-f][0-9A-Fa-f])/pack 'C', hex $1/ge;
 
       if ($host_np eq '') {

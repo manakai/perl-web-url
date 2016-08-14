@@ -6,7 +6,6 @@ use lib glob file (__FILE__)->dir->parent->subdir ('t_deps', 'modules', '*', 'li
 use Test::X1;
 use Test::More;
 use Web::DomainName::Punycode;
-use Encode;
 
 my $SupportLong = 1;
 
@@ -23,7 +22,7 @@ my $SupportLong = 1;
     ['a-b-', 'a-b--'],
     ['-abc', '-abc-'],
     ["\x{1000}", 'nid'],
-    [(encode 'utf-8', "\x{1000}"), 'aa30a'],
+    ["\xE1\x80\x80", 'aa30a'],
     ['xn--abcc', 'xn--abcc-'],
     ["\x{61}\x{1F62}\x{03B9}\x{62}" => 'ab-09b734z'],
     ["\x{61}\x{1F62}\x{62}" => 'ab-ymt'],
@@ -77,7 +76,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2011-2013 Wakaba <wakaba@suikawiki.org>.
+Copyright 2011-2016 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
