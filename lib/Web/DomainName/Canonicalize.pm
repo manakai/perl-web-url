@@ -3,18 +3,29 @@ use strict;
 use warnings;
 no warnings 'utf8';
 our $VERSION = '1.0';
+use Carp;
 use Web::Encoding;
 use Char::Prop::Unicode::BidiClass;
 use Unicode::Normalize;
 use Unicode::Stringprep;
 use Web::IPAddr::Canonicalize;
 use Web::DomainName::Punycode qw(encode_punycode);
-use Exporter::Lite;
 
 our @EXPORT = qw(
   canonicalize_domain_name
   canonicalize_url_host
 );
+
+sub import ($;@) {
+  my $from_class = shift;
+  my ($to_class, $file, $line) = caller;
+  no strict 'refs';
+  for (@_ ? @_ : @{$from_class . '::EXPORT'}) {
+    my $code = $from_class->can ($_)
+        or croak qq{"$_" is not exported by the $from_class module at $file line $line};
+    *{$to_class . '::' . $_} = $code;
+  }
+} # import
 
 *_nameprep_mapping = Unicode::Stringprep->new
     (3.2,

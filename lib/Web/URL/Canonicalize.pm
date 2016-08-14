@@ -1,13 +1,12 @@
 package Web::URL::Canonicalize;
 use strict;
 use warnings;
-our $VERSION = '1.0';
-require utf8;
+no warnings 'utf8';
+our $VERSION = '2.0';
+use Carp;
 use Web::Encoding qw(encode_web_utf8 encode_web_charset is_ascii_compat_charset_name);
 use Web::DomainName::Canonicalize;
 use Web::URL::Scheme qw(get_default_port);
-use Exporter::Lite;
-no warnings 'utf8';
 
 our @EXPORT = qw(url_to_canon_url);
 
@@ -16,6 +15,17 @@ our @EXPORT_OK = qw(
   parse_url resolve_url canonicalize_parsed_url serialize_parsed_url
   get_default_port
 );
+
+sub import ($;@) {
+  my $from_class = shift;
+  my ($to_class, $file, $line) = caller;
+  no strict 'refs';
+  for (@_ ? @_ : @{$from_class . '::EXPORT'}) {
+    my $code = $from_class->can ($_)
+        or croak qq{"$_" is not exported by the $from_class module at $file line $line};
+    *{$to_class . '::' . $_} = $code;
+  }
+} # import
 
 our $IsHierarchicalScheme = {
   ftp => 1,

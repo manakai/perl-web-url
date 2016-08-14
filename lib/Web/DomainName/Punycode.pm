@@ -2,9 +2,20 @@ package Web::DomainName::Punycode;
 use strict;
 use warnings;
 our $VERSION = '2.0';
-use Exporter::Lite;
+use Carp;
 
 our @EXPORT = qw(encode_punycode decode_punycode);
+
+sub import ($;@) {
+  my $from_class = shift;
+  my ($to_class, $file, $line) = caller;
+  no strict 'refs';
+  for (@_ ? @_ : @{$from_class . '::EXPORT'}) {
+    my $code = $from_class->can ($_)
+        or croak qq{"$_" is not exported by the $from_class module at $file line $line};
+    *{$to_class . '::' . $_} = $code;
+  }
+} # import
 
 # Compat
 our $RequestedModule ||= '';
