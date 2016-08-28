@@ -76,11 +76,6 @@ generated/decomps-authority-stringprep-c9-pe-1.dat
 
 ));
 
-my @decomps_data_a_f;
-push @decomps_data_a_f,
-    map { $data_d->child ($_) }
-    qq(generated/decomps-authority-stringprep-a1-$_.dat) for 1..94;
-
 {
   for_each_test $parse_data_f->stringify, {
     data => {is_prefixed => 1},
@@ -266,7 +261,6 @@ sub __canon (@) {
 
 __canon @decomps_data_f;
 __canon @decomps_data_bc_f;
-__canon @decomps_data_a_f;
 
   for my $test (
     [undef, undef, undef, undef],
