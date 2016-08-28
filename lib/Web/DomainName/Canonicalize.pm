@@ -6,7 +6,6 @@ our $VERSION = '1.0';
 use Carp;
 use Web::Encoding;
 use Web::Encoding::Normalization;
-use Char::Prop::Unicode::BidiClass;
 use Unicode::Stringprep;
 use Web::IPAddr::Canonicalize;
 use Web::DomainName::Punycode qw(encode_punycode);
@@ -62,6 +61,7 @@ sub _nameprep ($) {
   $label =~ tr{\x{2F868}\x{2F874}\x{2F91F}\x{2F95F}\x{2F9BF}}
       {\x{36FC}\x{5F53}\x{243AB}\x{7AEE}\x{45D7}};
   $label = _nameprep_mapping ($label);
+  return undef if $label =~ m{[\x{2488}-\x{249B}\x{2024}-\x{2026}]};
 
   my $has_unassigned = not eval { _nameprep_unassigned ($label); 1 };
   $label = to_nfkc ($label);
@@ -73,35 +73,6 @@ sub _nameprep ($) {
   return undef if not eval { _nameprep_prohibited ($label); 1 };
   return $label;
 } # _nameprep
-
-sub _nameprep_bidi ($) {
-  my $label = shift;
-
-  my @char = split //, $label;
-  if (@char) {
-    my $has_randalcat;
-    my $has_l;
-    my $first;
-    my $last;
-    for (split //, $label) {
-      my $class = unicode_bidi_class_c $_;
-      if ($class eq 'R' or $class eq 'AL') {
-        $has_randalcat = 1;
-      } elsif ($class eq 'L') {
-        $has_l = 1;
-      }
-      $first ||= $class;
-      $last = $class;
-    }
-    if ($has_randalcat) {
-      return undef if $has_l;
-      return undef if $first ne 'R' and $first ne 'AL';
-      return undef if $last ne 'R' and $last ne 'AL';
-    }
-  }
-  
-  return $label;
-} # _nameprep_bidi
 
 sub canonicalize_domain_name ($) {
   my $s = $_[0];
@@ -122,9 +93,6 @@ sub canonicalize_domain_name ($) {
   if ($need_punycode) {
     @label = map {
         my $label = $_;
-
-        $label = _nameprep_bidi $label;
-        return undef unless defined $label;
 
         if ($label =~ /[^\x00-\x7F]/) {
           return undef if $label =~ /^xn--/;
@@ -169,7 +137,7 @@ sub canonicalize_url_host ($;%) {
   my $ipv4 = canonicalize_ipv4_addr $s;
   return $ipv4 if defined $ipv4;
   
-  return undef if $s =~ /[\x00\x25\x2F\x5C]/;
+  return undef if $s =~ /[\x00\x20\x25\x2F\x5C]/;
 
   $s =~ s{([\x00-\x2A\x2C\x2F\x3B-\x3F\x5C\x5E\x60\x7B-\x7D\x7F])}{
     sprintf '%%%02X', ord $1;

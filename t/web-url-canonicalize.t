@@ -254,7 +254,7 @@ sub __canon (@) {
           }
         } $c, name => [$base_url, $charset];
         done $c;
-      } name => ['canon', $f->stringify, $test->{data}->[0]];
+      } name => ['canon', $f->stringify, $test->{name}->[0], $test->{data}->[0]];
     };
   } # $f
 } # __canon
