@@ -118,6 +118,19 @@ sub canonicalize_url_host ($;%) {
   my ($s, %args) = @_;
   return undef unless defined $s;
 
+  ## Spec: <https://url.spec.whatwg.org/#host-parsing> (Not fully
+  ## compliant yet)
+
+  if ($s =~ /\A\[/) {
+    unless ($s =~ /\]\z/) {
+      ## XXX syntax violation
+      return undef;
+    }
+    my $t = canonicalize_ipv6_addr substr $s, 1, -2 + length $s;
+    return '[' . $t . ']' if defined $t;
+    return undef;
+  }
+
   return undef if $s =~ m{^%5[Bb]};
 
   $s = encode_web_utf8 $s;
@@ -127,13 +140,8 @@ sub canonicalize_url_host ($;%) {
   $s = canonicalize_domain_name $s;
   return undef unless defined $s;
   
-  if ($s =~ /\A\[/ and $s =~ /\]\z/) {
-    my $t = canonicalize_ipv6_addr substr $s, 1, -2 + length $s;
-    return '[' . $t . ']' if defined $t;
-  } else {
-    return undef if not $args{is_file} and $s =~ /:/;
-  }
-
+  return undef if not $args{is_file} and $s =~ /:/;
+  
   my $ipv4 = canonicalize_ipv4_addr $s;
   return $ipv4 if defined $ipv4;
   
