@@ -153,20 +153,28 @@ sub canonicalize_url_host ($;%) {
     return undef;
   }
 
-  ## 6., 7.
-  my $ipv4 = canonicalize_ipv4_addr $s;
-  return $ipv4 if defined $ipv4; # XXX
-
   # XXX
   if ($args{is_file}) {
     $s =~ s{([\x00-\x2A\x2C\x2F\x3B-\x3F\x5C\x5E\x60\x7B-\x7D\x7F])}{
       sprintf '%%%02X', ord $1;
     }ge;
-  } else {
-    $s =~ s{([\x01-\x08\x0B\x0C\x0E-\x1F\x21\x22\x24\x26-\x2A\x2C\x3B-\x3E\x5E\x60\x7B-\x7D\x7F])}{
-      sprintf '%%%02X', ord $1;
-    }ge;
+    return $s;
   }
+
+  ## 6., 7.
+  my $ipv4 = Web::IPAddr::Canonicalize::_parse_ipv4_addr $s;
+  if (defined $ipv4) {
+    unless (ref $ipv4) { # An IPv4 address
+      return $ipv4;
+    }
+  } else { # failure
+    return undef;
+  }
+
+  # XXX
+  $s =~ s{([\x01-\x08\x0B\x0C\x0E-\x1F\x21\x22\x24\x26-\x2A\x2C\x3B-\x3E\x5E\x60\x7B-\x7D\x7F])}{
+    sprintf '%%%02X', ord $1;
+  }ge;
 
   ## 8.
   # XXX domain to Unicode, if Unicode flag is true

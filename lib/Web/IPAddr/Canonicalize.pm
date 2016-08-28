@@ -35,16 +35,16 @@ sub _to_number ($) {
   }
 } # _to_number
 
-sub canonicalize_ipv4_addr ($) {
+sub _parse_ipv4_addr ($) {
   return undef unless defined $_[0];
   my @label = split /\./, $_[0], -1;
-  @label = map { _to_number ($_) } @label;
+  return \'' if @label > 4 or @label == 0;
+  for (@label) {
+    $_ = _to_number $_;
+    return \'' if not defined $_;
+  }
   if (@label == 4) {
-    if (defined $label[0] and
-        defined $label[1] and
-        defined $label[2] and
-        defined $label[3] and
-        $label[0] <= 0xFF and
+    if ($label[0] <= 0xFF and
         $label[1] <= 0xFF and
         $label[2] <= 0xFF and
         $label[3] <= 0xFF) {
@@ -53,10 +53,7 @@ sub canonicalize_ipv4_addr ($) {
       return undef;
     }
   } elsif (@label == 3) {
-    if (defined $label[0] and
-        defined $label[1] and
-        defined $label[2] and
-        $label[0] <= 0xFF and
+    if ($label[0] <= 0xFF and
         $label[1] <= 0xFF and
         $label[2] <= 0xFFFF) {
       $label[3] = $label[2] & 0xFF;
@@ -65,9 +62,7 @@ sub canonicalize_ipv4_addr ($) {
       return undef;
     }
   } elsif (@label == 2) {
-    if (defined $label[0] and
-        defined $label[1] and
-        $label[0] <= 0xFF and
+    if ($label[0] <= 0xFF and
         $label[1] <= 0xFFFFFF) {
       $label[3] = $label[1] & 0xFF;
       $label[2] = ($label[1] >> 8) & 0xFF;
@@ -76,8 +71,7 @@ sub canonicalize_ipv4_addr ($) {
       return undef;
     }
   } elsif (@label == 1) {
-    if (defined $label[0] and
-        $label[0] <= 0xFFFFFFFF) {
+    if ($label[0] <= 0xFFFFFFFF) {
       $label[3] = $label[0] & 0xFF;
       $label[2] = ($label[0] >> 8) & 0xFF;
       $label[1] = ($label[0] >> 16) & 0xFF;
@@ -89,6 +83,12 @@ sub canonicalize_ipv4_addr ($) {
     return undef;
   }
   return join '.', @label;
+} # _parse_ipv4_addr
+
+sub canonicalize_ipv4_addr ($) {
+  my $parsed = _parse_ipv4_addr ($_[0]);
+  return undef if defined $parsed and ref $parsed;
+  return $parsed;
 } # canonicalize_ipv4_addr
 
 sub canonicalize_ipv6_addr ($) {
