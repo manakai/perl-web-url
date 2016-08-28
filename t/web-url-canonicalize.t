@@ -214,7 +214,7 @@ sub __canon (@) {
         delete $result->{$_} for qw(chrome-not-invalid);
         delete $result->{$_} for qw(gecko-not-invalid ie-not-invalid);
         if ($result->{invalid}) {
-          delete $result->{$_} for qw(canon scheme host path query fragment);
+          delete $result->{$_} for qw(canon scheme host path query fragment user);
         } else {
           delete $result->{invalid};
         }

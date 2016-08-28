@@ -118,51 +118,68 @@ sub canonicalize_url_host ($;%) {
   my ($s, %args) = @_;
   return undef unless defined $s;
 
-  ## Spec: <https://url.spec.whatwg.org/#host-parsing> (Not fully
-  ## compliant yet)
+  ## Spec: <https://url.spec.whatwg.org/#host-parsing>.
 
+  ## 1.
   if ($s =~ /\A\[/) {
+    ## 1.1.
     unless ($s =~ /\]\z/) {
       ## XXX syntax violation
       return undef;
     }
+
+    ## 1.2.
     my $t = canonicalize_ipv6_addr substr $s, 1, -2 + length $s;
     return '[' . $t . ']' if defined $t;
     return undef;
   }
 
-  return undef if $s =~ m{^%5[Bb]};
-
+  ## 2.
   $s = encode_web_utf8 $s;
   $s =~ s{%([0-9A-Fa-f]{2})}{pack 'C', hex $1}ge;
-  $s = decode_web_utf8 $s;
+  $s = decode_web_utf8_no_bom $s;
 
+  ## 3.
+  # XXX domain to ASCII
   $s = canonicalize_domain_name $s;
+
+  ## 4.
   return undef unless defined $s;
-  
-  return undef if not $args{is_file} and $s =~ /:/;
-  
+
+  ## 5.
+  return undef if not $args{is_file} and $s =~ /[:?\x40]/; # XXX
+  if ($s =~ /[\x00\x09\x0A\x0D\x20\x23\x25\x2F\x5B\x5C\x5D]/) {
+    # XXX syntax violation
+    return undef;
+  }
+
+  ## 6., 7.
   my $ipv4 = canonicalize_ipv4_addr $s;
-  return $ipv4 if defined $ipv4;
-  
-  return undef if $s =~ /[\x00\x20\x25\x2F\x5C]/;
+  return $ipv4 if defined $ipv4; # XXX
 
-  $s =~ s{([\x00-\x2A\x2C\x2F\x3B-\x3F\x5C\x5E\x60\x7B-\x7D\x7F])}{
-    sprintf '%%%02X', ord $1;
-  }ge;
-  $s =~ s{\@}{%40}g unless $args{is_file};
+  # XXX
+  if ($args{is_file}) {
+    $s =~ s{([\x00-\x2A\x2C\x2F\x3B-\x3F\x5C\x5E\x60\x7B-\x7D\x7F])}{
+      sprintf '%%%02X', ord $1;
+    }ge;
+  } else {
+    $s =~ s{([\x01-\x08\x0B\x0C\x0E-\x1F\x21\x22\x24\x26-\x2A\x2C\x3B-\x3E\x5E\x60\x7B-\x7D\x7F])}{
+      sprintf '%%%02X', ord $1;
+    }ge;
+  }
 
+  ## 8.
+  # XXX domain to Unicode, if Unicode flag is true
   return $s;
 } # canonicalize_url_host
 
+1;
+
 =head1 LICENSE
 
-Copyright 2011 Wakaba <w@suika.fam.cx>.
+Copyright 2011-2016 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;
-
