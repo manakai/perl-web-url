@@ -33,48 +33,12 @@ binmode $builder->todo_output,    ":utf8";
 binmode STDOUT, ':encoding(utf8)';
 binmode STDERR, ':encoding(utf8)';
 
-my $data_d = path (__FILE__)->parent->child ('data');
+my $data_d = path (__FILE__)->parent->parent->child ('t_deps/tests/url/parsing');
 my $parse_data_f = $data_d->child ('parsing.dat');
 my $resolve_data_f = $data_d->child ('resolving.dat');
-my @decomps_data_f = (map { $data_d->child ($_) } qw(
-
-decomps-authority-domain.dat  decomps-file.dat        decomps-query.dat
-decomps-authority-ipv4.dat    decomps-fragment.dat    decomps-relative.dat
-decomps-authority-ipv6.dat    decomps-javascript.dat  decomps-scheme.dat
-decomps-authority.dat         decomps-mailto.dat      decomps.dat
-decomps-charsets.dat          decomps-path.dat
-decomps-data.dat              decomps-port.dat
-decomps-about.dat decomps-ftp.dat
-
-));
-
-my @decomps_data_bc_f = (map { $data_d->child ($_) } qw(
-
-generated/decomps-authority-stringprep-b1-pe.dat
-generated/decomps-authority-stringprep-b1.dat
-generated/decomps-authority-stringprep-b2-pe.dat
-generated/decomps-authority-stringprep-b2.dat
-
-generated/decomps-authority-stringprep-c12-1.dat
-generated/decomps-authority-stringprep-c12-pe-1.dat
-generated/decomps-authority-stringprep-c22-1.dat
-generated/decomps-authority-stringprep-c22-pe-1.dat
-generated/decomps-authority-stringprep-c3-1.dat
-generated/decomps-authority-stringprep-c3-pe-1.dat
-generated/decomps-authority-stringprep-c4-1.dat
-generated/decomps-authority-stringprep-c4-pe-1.dat
-generated/decomps-authority-stringprep-c5-1.dat
-generated/decomps-authority-stringprep-c5-pe-1.dat
-generated/decomps-authority-stringprep-c6-1.dat
-generated/decomps-authority-stringprep-c6-pe-1.dat
-generated/decomps-authority-stringprep-c7-1.dat
-generated/decomps-authority-stringprep-c7-pe-1.dat
-generated/decomps-authority-stringprep-c8-1.dat
-generated/decomps-authority-stringprep-c8-pe-1.dat
-generated/decomps-authority-stringprep-c9-1.dat
-generated/decomps-authority-stringprep-c9-pe-1.dat
-
-));
+my @decomps_data_f = grep {
+  $_ ne $parse_data_f and $_ ne $resolve_data_f;
+} $data_d->children (qr/^decomps-.+\.dat$/);
 
 {
   for_each_test $parse_data_f->stringify, {
@@ -260,7 +224,6 @@ sub __canon (@) {
 } # __canon
 
 __canon @decomps_data_f;
-__canon @decomps_data_bc_f;
 
   for my $test (
     [undef, undef, undef, undef],

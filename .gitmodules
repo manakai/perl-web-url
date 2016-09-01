@@ -14,3 +14,9 @@
 	path = t_deps/modules/testdataparser
 	url = git://github.com/wakaba/testdataparser
 	track = master
+[submodule "modules/tests"]
+	path = modules/tests
+	url = https://github.com/wakaba/tests-web
+[submodule "t_deps/tests"]
+	path = t_deps/tests
+	url = https://github.com/wakaba/tests-web
