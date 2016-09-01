@@ -78,9 +78,12 @@ If the host is a domain, C<undef> is returned instead.
 
 =back
 
-=head1 SPECIFICATION
+=head1 SPECIFICATIONS
 
 URL Standard <https://url.spec.whatwg.org/>.
+
+UTS #46: Unicode IDNA Compatibility Processing
+<http://www.unicode.org/reports/tr46/>.
 
 =head1 AUTHOR
 

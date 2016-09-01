@@ -76,7 +76,12 @@ sub _preprocess_input ($) {
 sub _find_authority_path_query_fragment ($$) {
   my ($inputref => $result, %args) = @_;
 
-  if ($$inputref =~ m{\A[/\\]{3}(?![/\\])}) {
+  if ($$inputref =~ m{\A[/\\]{3}(?![/\\])} and
+      not (not defined $result->{scheme_normalized} or
+           $result->{scheme_normalized} eq 'http' or
+           $result->{scheme_normalized} eq 'https' or
+           $result->{scheme_normalized} eq 'ftp' or
+           $result->{scheme_normalized} eq 'file')) {
     ## Slash characters
     $$inputref =~ s{\A[/\\]{2}}{};
     $result->{authority} = '';
@@ -516,6 +521,13 @@ sub canonicalize_parsed_url ($;$) {
       if (not defined $parsed_url->{host}) {
         %$parsed_url = (invalid => 1);
         return $parsed_url;
+      } elsif ($parsed_url->{scheme_normalized} eq 'http' or
+               $parsed_url->{scheme_normalized} eq 'https' or
+               $parsed_url->{scheme_normalized} eq 'ftp') {
+        if ($parsed_url->{host} eq '') {
+          %$parsed_url = (invalid => 1);
+          return $parsed_url;
+        }
       }
     }
 

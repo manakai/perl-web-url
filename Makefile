@@ -15,6 +15,7 @@ updatenightly: clean local/bin/pmbp.pl build
 ## ------ Deps ------
 
 WGET = wget
+CURL = curl
 
 PERL = ./perl
 PERLT = $(PERL)
@@ -47,7 +48,8 @@ local/perl-latest/pm/lib/perl5/JSON/PS.pm:
 
 build: deps json-ps build-main
 
-build-main: lib/Web/DomainName/IDNEnabled.pm lib/Web/URL/_Defs.pm
+build-main: lib/Web/DomainName/IDNEnabled.pm lib/Web/URL/_Defs.pm \
+    lib/Web/DomainName/_CharClasses.pm lib/Web/DomainName/_CharMaps.pm
 
 local/tlds.json:
 	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-web-defs/master/data/tlds.json
@@ -58,6 +60,20 @@ lib/Web/DomainName/IDNEnabled.pm: bin/idnenabled.pl local/tlds.json
 	$(PERLT) $< > $@
 lib/Web/URL/_Defs.pm: bin/generate-url-defs.pl local/url-schemes.json
 	$(PERLT) $< > $@
+
+lib/Web/DomainName/_CharClasses.pm:
+	echo 'package Web::DomainName::Canonicalize;' > $@;
+	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InDisallowed=%24uts46%3Adisallowed >> $@
+	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InDeviation=%24uts46%3Adeviation >> $@
+	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InIgnoredOrMapped=%24uts46%3Aignored%7C%24uts46%3Amapped%7C%24uts46%3Adisallowed_STD3_mapped >> $@
+	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InBadLabel=-%24uts46%3Avalid%7C%24unicode%3AM%7C%5B%2E%5D-%24uts46%3Adisallowed_STD3_valid%20-%24uts46%3Adisallowed_STD3_mapped >> $@
+	echo '1;' >> $@
+	$(PERL) -c $@
+
+local/maps.json:
+	$(WGET) -O $@ https://raw.githubusercontent.com/manakai/data-chars/master/data/maps.json
+lib/Web/DomainName/_CharMaps.pm: bin/generate-charmaps.pl local/maps.json
+	$(PERL) $< > $@
 
 ## ------ Tests ------
 

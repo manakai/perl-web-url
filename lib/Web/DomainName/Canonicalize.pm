@@ -8,7 +8,11 @@ use Web::Encoding;
 use Web::Encoding::Normalization;
 use Unicode::Stringprep;
 use Web::IPAddr::Canonicalize;
-use Web::DomainName::Punycode qw(encode_punycode);
+use Web::DomainName::Punycode;
+
+use Web::DomainName::_CharClasses;
+use Web::DomainName::_CharMaps;
+our $IDNAMapped;
 
 our @EXPORT = qw(
   canonicalize_domain_name
@@ -25,6 +29,109 @@ sub import ($;@) {
     *{$to_class . '::' . $_} = $code;
   }
 } # import
+
+sub _valid_label ($$) {
+  my ($transitional, $label) = @_;
+
+  unless (is_nfc $label) {
+    return 0;
+  }
+
+  if ($label =~ /\A-/ or $label =~ /-\z/ or $label =~ /\A..--/s) {
+    return 0;
+  }
+
+  if ($label =~ /\p{InBadLabel}/) {
+    return 0;
+  }
+
+  if ($transitional and $label =~ /\p{InDeviation}/) {
+    return 0;
+  }
+
+  return 1;
+} # _valid_label
+
+sub _uts46 ($$$) {
+  my ($s, $transitional, $to_ascii) = @_;
+
+  unless ($s =~ /[^\x00-\x7F]/) { ## Willful violation to UTS #46
+    $s =~ tr/A-Z/a-z/; ## ASCII case-insensitive
+    return $s;
+  }
+
+  ## Map - disallowed
+  while ($s =~ /\p{InDisallowed}/g) {
+    # XXX syntax violation
+    return undef if $to_ascii;
+  }
+
+  ## Map - ignored, mapped
+  {
+    no warnings 'uninitialized';
+    $s =~ s/(\p{InIgnoredOrMapped})/$IDNAMapped->{$1}/g;
+  }
+
+  ## Map - deviation
+  if ($transitional) {
+    $s =~ s/(\p{InDeviation})/$IDNAMapped->{$1}/g;
+  }
+
+  ## Normalize
+  $s = to_nfc $s;
+
+    ## Break
+    my @s = split /\./, $s, -1;
+
+    ## Convert/validate
+    for my $label (@s) {
+      if ($label =~ /^xn--/) {
+        my $result = decode_punycode substr $label, 4;
+        if (defined $result) {
+          $label = $result;
+          unless (_valid_label 0, $label) {
+            # XXX syntax violation
+            return undef if $to_ascii;
+          }
+        } else {
+          # XXX syntax violation
+          return undef if $to_ascii;
+        }
+      } else {
+        unless (_valid_label $transitional, $label) {
+          # XXX syntax violation
+          return undef if $to_ascii;
+        }
+      }
+
+      if ($to_ascii and $label =~ /[^\x00-\x7F]/) {
+        $label = 'xn--' . encode_punycode $label;
+      }
+
+      ## Willful violation to URL Standard
+      return undef if length $label > 63;
+    } # $label
+
+    ## Not in the spec
+    for (@s[0..($#s-1)]) {
+      if ($_ eq '') {
+        # XXX syntax violation
+        return undef;
+      }
+    }
+
+    return join '.', @s;
+} # _uts46
+
+sub domain_to_unicode ($) {
+  ## UTS #46 ToUnicode + URL Standard domain to Unicode
+  return _uts46 $_[0], ! 'transitional', ! 'to_ascii';
+} # domain_to_unicode
+
+sub domain_to_ascii ($) {
+  ## UTS #46 ToASCII + URL Standard domain to ASCII
+  return _uts46 $_[0], 'transitional', 'to_ascii';
+} # domain_to_ascii
 
 *_nameprep_mapping = Unicode::Stringprep->new
     (3.2,
@@ -141,7 +248,8 @@ sub canonicalize_url_host ($;%) {
 
   ## 3.
   # XXX domain to ASCII
-  $s = canonicalize_domain_name $s;
+  #$s = canonicalize_domain_name $s;
+  $s = domain_to_ascii $s;
 
   ## 4.
   return undef unless defined $s;

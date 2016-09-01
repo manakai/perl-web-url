@@ -105,7 +105,7 @@ generated/decomps-authority-stringprep-c9-pe-1.dat
 #line 1 "_parse"
       eq_or_diff $actual, $result;
       done $c;
-    } n => 1, name => 'parse';
+    } n => 1, name => ['parse', $parse_data_f, $test->{data}->[0]];
   }
 }
 
@@ -214,7 +214,7 @@ sub __canon (@) {
         delete $result->{$_} for qw(chrome-not-invalid);
         delete $result->{$_} for qw(gecko-not-invalid ie-not-invalid);
         if ($result->{invalid}) {
-          delete $result->{$_} for qw(canon scheme host path query fragment user);
+          delete $result->{$_} for qw(canon scheme host path query fragment user password port);
         } else {
           delete $result->{invalid};
         }
