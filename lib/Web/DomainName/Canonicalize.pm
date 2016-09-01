@@ -2,11 +2,10 @@ package Web::DomainName::Canonicalize;
 use strict;
 use warnings;
 no warnings 'utf8';
-our $VERSION = '1.0';
+our $VERSION = '2.0';
 use Carp;
 use Web::Encoding;
 use Web::Encoding::Normalization;
-use Unicode::Stringprep;
 use Web::IPAddr::Canonicalize;
 use Web::DomainName::Punycode;
 
@@ -133,94 +132,7 @@ sub domain_to_ascii ($) {
   return _uts46 $_[0], 'transitional', 'to_ascii';
 } # domain_to_ascii
 
-*_nameprep_mapping = Unicode::Stringprep->new
-    (3.2,
-     [\@Unicode::Stringprep::Mapping::B1,
-      \@Unicode::Stringprep::Mapping::B2],
-     '',
-     [],
-     0, 0);
-*_nameprep_prohibited = Unicode::Stringprep->new
-    (3.2,
-     [],
-     '',
-     [\@Unicode::Stringprep::Prohibited::C12,
-      \@Unicode::Stringprep::Prohibited::C22,
-      \@Unicode::Stringprep::Prohibited::C3,
-      \@Unicode::Stringprep::Prohibited::C4,
-      \@Unicode::Stringprep::Prohibited::C5,
-      \@Unicode::Stringprep::Prohibited::C6,
-      \@Unicode::Stringprep::Prohibited::C7,
-      \@Unicode::Stringprep::Prohibited::C8,
-      \@Unicode::Stringprep::Prohibited::C9],
-     0, 0);
-*_nameprep_unassigned = Unicode::Stringprep->new
-    (3.2,
-     [],
-     '',
-     [],
-     0, 1);
-
-sub _nameprep ($) {
-  my $label = $_[0];
-  local $@;
-  
-  $label =~ tr{\x{2F868}\x{2F874}\x{2F91F}\x{2F95F}\x{2F9BF}}
-      {\x{36FC}\x{5F53}\x{243AB}\x{7AEE}\x{45D7}};
-  $label = _nameprep_mapping ($label);
-  return undef if $label =~ m{[\x{2488}-\x{249B}\x{2024}-\x{2026}]};
-
-  my $has_unassigned = not eval { _nameprep_unassigned ($label); 1 };
-  $label = to_nfkc ($label);
-  if ($has_unassigned) {
-    $label = _nameprep_mapping ($label);
-    $label = to_nfkc $label;
-  }
-  
-  return undef if not eval { _nameprep_prohibited ($label); 1 };
-  return $label;
-} # _nameprep
-
-sub canonicalize_domain_name ($) {
-  my $s = $_[0];
-  return undef unless defined $s;
-
-  my $need_punycode = $s =~ /[^\x00-\x7F]/;
-
-  $s = _nameprep $s;
-  return undef unless defined $s;
-
-  $s =~ tr/\x{3002}\x{FF0E}\x{FF61}/.../;
-
-  my $has_root_dot = $s =~ s/[.]\z//;
-
-  my @label = split /\./, $s, -1;
-  @label = ('') unless @label;
-
-  if ($need_punycode) {
-    @label = map {
-        my $label = $_;
-
-        if ($label =~ /[^\x00-\x7F]/) {
-          return undef if $label =~ /^xn--/;
-          $label = encode_punycode $label;
-          return undef unless defined $label;
-          $label = 'xn--' . $label;
-          return undef if length $label > 63;
-        } else {
-          return undef if $label eq '';
-          return undef if length $label > 63;
-        }
-        $label;
-    } @label;
-  }
-
-  push @label, '' if $has_root_dot;
-  $s = join '.', @label;
-  
-  return $s;
-} # canonicalize_domain_name
-
+*canonicalize_domain_name = \&canonicalize_url_host;
 sub canonicalize_url_host ($;%) {
   my ($s, %args) = @_;
   return undef unless defined $s;
@@ -247,8 +159,6 @@ sub canonicalize_url_host ($;%) {
   $s = decode_web_utf8_no_bom $s;
 
   ## 3.
-  # XXX domain to ASCII
-  #$s = canonicalize_domain_name $s;
   $s = domain_to_ascii $s;
 
   ## 4.
