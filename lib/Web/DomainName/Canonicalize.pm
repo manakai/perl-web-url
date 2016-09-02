@@ -133,11 +133,37 @@ sub domain_to_ascii ($) {
 } # domain_to_ascii
 
 *canonicalize_domain_name = \&canonicalize_url_host;
-sub canonicalize_url_host ($;%) {
-  my ($s, %args) = @_;
+
+sub _canonicalize_url_host_for_file ($;%) {
+  my $s = $_[0];
+
+  ## 2.
+  $s = encode_web_utf8 $s;
+  $s =~ s{%([0-9A-Fa-f]{2})}{pack 'C', hex $1}ge;
+  $s = decode_web_utf8_no_bom $s;
+
+  ## 3.
+  $s = domain_to_ascii $s;
+
+  ## 4.
   return undef unless defined $s;
 
-  ## Spec: <https://url.spec.whatwg.org/#host-parsing>.
+  ## 5.
+  if ($s =~ /[\x00\x09\x0A\x0D\x20\x23\x25\x2F\x5B\x5C\x5D]/) {
+    # XXX syntax violation
+    return undef;
+  }
+
+  $s =~ s{([\x01-\x08\x0B\x0C\x0E-\x1F\x21\x22\x24\x26-\x2A\x2C\x3B-\x3F\x5E\x60\x7B-\x7D\x7F])}{
+    sprintf '%%%02X', ord $1;
+  }ge;
+
+  return $s;
+} # _canonicalize_url_host_for_file
+
+## Spec: <https://url.spec.whatwg.org/#host-parsing>.
+sub _host_parser_to_ascii ($) {
+  my $s = $_[0];
 
   ## 1.
   if ($s =~ /\A\[/) {
@@ -165,18 +191,9 @@ sub canonicalize_url_host ($;%) {
   return undef unless defined $s;
 
   ## 5.
-  return undef if not $args{is_file} and $s =~ /[:?\x40]/; # XXX
-  if ($s =~ /[\x00\x09\x0A\x0D\x20\x23\x25\x2F\x5B\x5C\x5D]/) {
+  if ($s =~ /[\x00\x09\x0A\x0D\x20\x23\x25\x2F:?\x40\x5B\x5C\x5D]/) {
     # XXX syntax violation
     return undef;
-  }
-
-  # XXX
-  if ($args{is_file}) {
-    $s =~ s{([\x00-\x2A\x2C\x2F\x3B-\x3F\x5C\x5E\x60\x7B-\x7D\x7F])}{
-      sprintf '%%%02X', ord $1;
-    }ge;
-    return $s;
   }
 
   ## 6., 7.
@@ -189,13 +206,27 @@ sub canonicalize_url_host ($;%) {
     return undef;
   }
 
+  ## 8. is for toUnicode.
+
+  return $s;
+} # _host_parser_to_ascii
+
+sub canonicalize_url_host ($;%) {
+  my ($s, %args) = @_;
+  return undef unless defined $s;
+
+  if ($args{is_file}) {
+    return _canonicalize_url_host_for_file $s;
+  }
+
+  $s = _host_parser_to_ascii ($s);
+  return undef unless defined $s;
+
   # XXX
   $s =~ s{([\x01-\x08\x0B\x0C\x0E-\x1F\x21\x22\x24\x26-\x2A\x2C\x3B-\x3E\x5E\x60\x7B-\x7D\x7F])}{
     sprintf '%%%02X', ord $1;
   }ge;
 
-  ## 8.
-  # XXX domain to Unicode, if Unicode flag is true
   return $s;
 } # canonicalize_url_host
 

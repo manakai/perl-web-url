@@ -30,14 +30,6 @@ The |Web::Encoding| module and related modules from the
 perl-web-encodings repository, which is a submodule of this
 repository, are also required.
 
-* Tests
-
-- modules/tests-web-url = <https://github.com/wakaba/tests-web-url>
-   - URL/IDN canonicalization tests
-   - Test harnesses for testing your browser
-
-- t/*.t - Test harnesses for Perl modules
-
 * Distribution
 
 Latest version of these files are available from the Git repository:
