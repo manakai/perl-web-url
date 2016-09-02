@@ -1,7 +1,7 @@
 package Web::Host;
 use strict;
 use warnings;
-our $VERSION = '1.0';
+our $VERSION = '2.0';
 use Carp qw(croak);
 use Web::DomainName::Canonicalize qw(canonicalize_url_host);
 
@@ -77,6 +77,18 @@ sub stringify ($) {
     return $_[0]->{domain};
   }
 } # stringify
+
+*to_ascii = \&stringify;
+
+sub to_unicode ($) {
+  if (defined $_[0]->{ipv6}) {
+    return '[' . $_[0]->{ipv6} . ']';
+  } elsif (defined $_[0]->{ipv4}) {
+    return $_[0]->{ipv4};
+  } else {
+    return Web::DomainName::Canonicalize::_domain_to_unicode $_[0]->{domain};
+  }
+} # to_unicode
 
 1;
 

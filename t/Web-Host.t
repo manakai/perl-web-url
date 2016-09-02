@@ -12,10 +12,13 @@ for (
   ['Fuga.ABC' => 'fuga.abc'],
   ['abc.d.' => 'abc.d.'],
   ['0120.abc.4' => '0120.abc.4'],
-  ["\x{5000}.\x{5004}" => 'xn--rvq.xn--vvq'],
-  ["XN--RVQ" => "xn--rvq"],
+  ["\x{5000}.\x{5004}" => 'xn--rvq.xn--vvq', "\x{5000}.\x{5004}"],
+  ["XN--RVQ" => "xn--rvq", "\x{5000}"],
+  ['xn--abc-' => 'xn--abc-', 'abc'],
+  ['xn--abc--' => 'xn--abc--', 'abc-'],
 ) {
-  my ($input, $output) = @$_;
+  my ($input, $output, $uoutput) = @$_;
+  $uoutput = $output unless defined $uoutput;
   test {
     my $c = shift;
     my $host = Web::Host->parse_string ($input);
@@ -25,11 +28,13 @@ for (
     ok ! $host->is_ipv4;
     ok ! $host->is_ipv6;
     is $host->stringify, $output;
+    is $host->to_ascii, $output;
+    is $host->to_unicode, $uoutput;
     ok $host->equals ($host);
     is $host->packed_addr, undef;
     is $host->text_addr, undef;
     done $c;
-  } n => 9;
+  } n => 11, name => 'domains';
 }
 
 for (
@@ -47,6 +52,8 @@ for (
     ok $host->is_ipv4;
     ok ! $host->is_ipv6;
     is $host->stringify, $output;
+    is $host->to_ascii, $output;
+    is $host->to_unicode, $output;
     is $host->text_addr, $output;
     ok $host->equals ($host);
     my $packed = $host->packed_addr;
@@ -57,7 +64,7 @@ for (
     ok $host2->equals ($host);
     is $host2->stringify, $host->stringify;
     done $c;
-  } n => 13;
+  } n => 15, name => 'IPv4 addresses';
 }
 
 for (
@@ -78,6 +85,8 @@ for (
     ok ! $host->is_ipv4;
     ok $host->is_ipv6;
     is $host->stringify, $output;
+    is $host->to_ascii, $output;
+    is $host->to_unicode, $output;
     is "[".$host->text_addr."]", $output;
     ok $host->equals ($host);
     my $packed = $host->packed_addr;
@@ -88,12 +97,15 @@ for (
     ok $host2->equals ($host);
     is $host2->stringify, $host->stringify;
     done $c;
-  } n => 13;
+  } n => 15, name => 'IPv6 addresses';
 }
 
 for (
   ['::4'],
   ['ab:cd'],
+  ["\x{5000}..\x{5001}"],
+  ["xn--abc--\x{4e00}"],
+  ["xn--abc--.\x{4e00}"],
 ) {
   my ($input) = @$_;
   test {

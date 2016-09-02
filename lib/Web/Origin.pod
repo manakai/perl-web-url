@@ -9,6 +9,7 @@ Web::Origin - Origin API
   $origin = Web::Origin->new_opaque;
   warn $origin->is_opaque;
   warn $origin->to_ascii;
+  warn $origin->to_unicode;
   warn $origin->same_origin_as ($origin2);
 
 =head1 SYNOPSIS
@@ -58,6 +59,10 @@ Return whether two origins are same origin-domain or not.
 =item $string = $origin->to_ascii
 
 Return the ASCII serialization of the origin.
+
+=item $string = $origin->to_unicode
+
+Return the Unicode serialization of the origin.
 
 =back
 

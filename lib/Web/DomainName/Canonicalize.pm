@@ -54,7 +54,7 @@ sub _valid_label ($$) {
 sub _uts46 ($$$) {
   my ($s, $transitional, $to_ascii) = @_;
 
-  unless ($s =~ /[^\x00-\x7F]/) { ## Willful violation to UTS #46
+  if ($to_ascii and not $s =~ /[^\x00-\x7F]/) { ## Willful violation to UTS #46
     $s =~ tr/A-Z/a-z/; ## ASCII case-insensitive
     return $s;
   }
@@ -122,15 +122,15 @@ sub _uts46 ($$$) {
     return join '.', @s;
 } # _uts46
 
-sub domain_to_unicode ($) {
+sub _domain_to_unicode ($) {
   ## UTS #46 ToUnicode + URL Standard domain to Unicode
   return _uts46 $_[0], ! 'transitional', ! 'to_ascii';
-} # domain_to_unicode
+} # _domain_to_unicode
 
-sub domain_to_ascii ($) {
+sub _domain_to_ascii ($) {
   ## UTS #46 ToASCII + URL Standard domain to ASCII
   return _uts46 $_[0], 'transitional', 'to_ascii';
-} # domain_to_ascii
+} # _domain_to_ascii
 
 *canonicalize_domain_name = \&canonicalize_url_host;
 
@@ -143,7 +143,7 @@ sub _canonicalize_url_host_for_file ($;%) {
   $s = decode_web_utf8_no_bom $s;
 
   ## 3.
-  $s = domain_to_ascii $s;
+  $s = _domain_to_ascii $s;
 
   ## 4.
   return undef unless defined $s;
@@ -185,7 +185,7 @@ sub _host_parser_to_ascii ($) {
   $s = decode_web_utf8_no_bom $s;
 
   ## 3.
-  $s = domain_to_ascii $s;
+  $s = _domain_to_ascii $s;
 
   ## 4.
   return undef unless defined $s;

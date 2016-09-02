@@ -16,13 +16,14 @@ test {
   ok $opaque->same_origin_as ($opaque);
   ok $opaque->same_origin_domain_as ($opaque);
   is $opaque->to_ascii, 'null';
+  is $opaque->to_unicode, 'null';
 
   my $opaque2 = Web::Origin->new_opaque;
   ok ! $opaque->same_origin_as ($opaque2);
   ok ! $opaque->same_origin_domain_as ($opaque2);
 
   done $c;
-} n => 7, name => 'opaque origin';
+} n => 8, name => 'opaque origin';
 
 for (
   ['https', '127.0.0.1', undef, q<https://127.0.0.1>],
@@ -41,6 +42,7 @@ for (
     ok not $origin->same_origin_as ($opaque);
     ok not $origin->same_origin_domain_as ($opaque);
     is $origin->to_ascii, $ascii;
+    is $origin->to_unicode, $ascii;
 
     my $origin2 = Web::Origin->new_tuple ($scheme, $host, $port);
     eval {
@@ -51,14 +53,17 @@ for (
     ok $origin->same_origin_domain_as ($origin2);
 
     done $c;
-  } n => 10, name => 'tuple origin';
+  } n => 11, name => 'IP address origin';
 }
 
 for (
   ['http', 'hoge.fuga', undef, q<http://hoge.fuga>],
   ['http', 'hoge.fuga', 62, q<http://hoge.fuga:62>],
+  ['https', 'xn--rvq.xn--vvq.t', undef, q<https://xn--rvq.xn--vvq.t>, qq<https://\x{5000}.\x{5004}.t>],
+  ['https', 'xn--rvq.xn--vvq.t', 62, q<https://xn--rvq.xn--vvq.t:62>, qq<https://\x{5000}.\x{5004}.t:62>],
 ) {
-  my ($scheme, $host, $port, $ascii) = @$_;
+  my ($scheme, $host, $port, $ascii, $unicode) = @$_;
+  $unicode = $ascii unless defined $unicode;
   test {
     my $c = shift;
 
@@ -71,6 +76,7 @@ for (
     ok not $origin->same_origin_as ($opaque);
     ok not $origin->same_origin_domain_as ($opaque);
     is $origin->to_ascii, $ascii;
+    is $origin->to_unicode, $unicode;
 
     my $origin2 = Web::Origin->new_tuple ($scheme, $host, $port);
     $origin2->set_domain (Web::Host->parse_string ($host));
@@ -78,7 +84,7 @@ for (
     ok ! $origin->same_origin_domain_as ($origin2);
 
     done $c;
-  } n => 9, name => 'tuple origin';
+  } n => 10, name => 'domain origin';
 }
 
 test {

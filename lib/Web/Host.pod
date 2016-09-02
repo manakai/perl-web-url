@@ -8,7 +8,8 @@ Web::Host - Host names for the Web
   $host = Web::Host->parse_string ("MyDomain.test");
   warn $host->is_domain;
   warn $host->is_ip;
-  warn $host->stringify;
+  warn $host->to_ascii;
+  warn $host->to_unicode;
 
 =head1 DESCRIPTION
 
@@ -58,9 +59,36 @@ if their serializations are equal, by definition.
 
 =item $string = $host->stringify
 
+=item $string = $host->to_ascii
+
 Serialize the host, using the host serializer of the URL Standard.
 The result is canonicalized.  Any IDN is converted into its Punycode
 form.  IPv6 addresses are enclosed in C<[> and C<]>.
+
+Note that JavaScript code C<URL.domainToASCII ($domain)> (where
+I<$domain> is a Unicode string) is equivalent to the following code:
+
+  my $host = Web::Host->parse_string ($domain);
+  if ($host->is_domain) {
+    return $host->to_ascii;
+  } else {
+    return '';
+  }
+
+=item $string = $host->to_unicode
+
+Serialize the host, but decode Punycode-encoded labels in the host
+whenever possible.
+
+Note that JavaScript code C<URL.domainToUnicode ($domain)> (where
+I<$domain> is a Unicode string) is equivalent to the following code:
+
+  my $host = Web::Host->parse_string ($domain);
+  if ($host->is_domain) {
+    return $host->to_unicode;
+  } else {
+    return '';
+  }
 
 =item $bytes = $host->packed_addr
 

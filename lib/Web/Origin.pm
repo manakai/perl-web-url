@@ -1,8 +1,9 @@
 package Web::Origin;
 use strict;
 use warnings;
-our $VERSION = '1.0';
+our $VERSION = '2.0';
 use Carp qw(croak);
+use Web::Host;
 use Web::URL::Canonicalize qw(serialize_parsed_url);
 
 sub new_opaque ($) {
@@ -82,7 +83,18 @@ sub to_ascii ($) {
   }
 } # to_ascii
 
-# XXX to_unicode
+sub to_unicode ($) {
+  if ($_[0]->is_opaque) {
+    return 'null';
+  } else {
+    my $host = Web::Host->parse_string ($_[0]->{host});
+    return serialize_parsed_url {
+      scheme => $_[0]->{scheme},
+      host => $host->to_unicode,
+      port => $_[0]->{port},
+    };
+  }
+} # to_unicode
 
 1;
 
