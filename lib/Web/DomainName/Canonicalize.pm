@@ -44,6 +44,10 @@ sub _valid_label ($$) {
     return 0;
   }
 
+  if ($label =~ /\A\p{InBadLabelStart}/) {
+    return 0;
+  }
+
   if ($transitional and $label =~ /\p{InDeviation}/) {
     return 0;
   }

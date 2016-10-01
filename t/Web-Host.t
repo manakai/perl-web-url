@@ -16,6 +16,8 @@ for (
   ["XN--RVQ" => "xn--rvq", "\x{5000}"],
   ['xn--abc-' => 'xn--abc-', 'abc'],
   ['xn--abc--' => 'xn--abc--', 'abc-'],
+  ["\x{0938}\x{0902}\x{0917}\x{0920}\x{0928}" => "xn--i1b6b1a6a2e",
+   "\x{0938}\x{0902}\x{0917}\x{0920}\x{0928}"],
 ) {
   my ($input, $output, $uoutput) = @$_;
   $uoutput = $output unless defined $uoutput;
@@ -106,6 +108,7 @@ for (
   ["\x{5000}..\x{5001}"],
   ["xn--abc--\x{4e00}"],
   ["xn--abc--.\x{4e00}"],
+  ["\x{0902}\x{0917}\x{0920}\x{0928}"],
 ) {
   my ($input) = @$_;
   test {
@@ -113,7 +116,7 @@ for (
     my $host = Web::Host->parse_string ($input);
     is $host, undef;
     done $c;
-  } n => 1;
+  } n => 1, name => 'invalid hosts';
 }
 
 test {

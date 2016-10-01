@@ -66,7 +66,8 @@ lib/Web/DomainName/_CharClasses.pm:
 	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InDisallowed=%24uts46%3Adisallowed >> $@
 	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InDeviation=%24uts46%3Adeviation >> $@
 	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InIgnoredOrMapped=%24uts46%3Aignored%7C%24uts46%3Amapped%7C%24uts46%3Adisallowed_STD3_mapped >> $@
-	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InBadLabel=-%24uts46%3Avalid%7C%24unicode%3AM%7C%5B%2E%5D-%24uts46%3Adisallowed_STD3_valid%20-%24uts46%3Adisallowed_STD3_mapped >> $@
+	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InBadLabel=-%24uts46%3Avalid%7C%5B%2E%5D-%24uts46%3Adisallowed_STD3_valid%20-%24uts46%3Adisallowed_STD3_mapped >> $@
+	$(CURL) -f -l https://chars.suikawiki.org/set/perlrevars?item=InBadLabelStart=%24unicode%3AM >> $@
 	echo '1;' >> $@
 	$(PERL) -c $@
 
