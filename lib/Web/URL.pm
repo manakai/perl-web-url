@@ -21,6 +21,10 @@ sub scheme ($) {
   return $_[0]->{scheme};
 } # scheme
 
+sub is_http_s ($) {
+  return $_[0]->{scheme} eq 'https' || $_[0]->{scheme} eq 'http';
+} # is_http_s
+
 sub username ($) {
   return defined $_[0]->{user} ? $_[0]->{user} : '';
 } # username

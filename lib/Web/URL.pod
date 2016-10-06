@@ -34,6 +34,11 @@ If the parsing failed, the method returns C<undef>.
 Return the scheme component of the URL, canonicalized (i.e. in
 lowercase).
 
+=item $boolean = $url->is_http_s
+
+Return whether the URL's scheme is an HTTP(S) scheme or not,
+i.e. whether either C<http> or C<https> or not.
+
 =item $string = $url->username
 
 Return the username component of the URL.  If the URL has no explicit

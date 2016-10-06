@@ -205,6 +205,28 @@ test {
   done $c;
 } n => 3, name => 'host';
 
+for my $url (qw(
+  http://hoge https://hoge
+)) {
+  test {
+    my $c = shift;
+    my $url = Web::URL->parse_string ($url);
+    ok $url->is_http_s;
+    done $c;
+  } n => 1;
+}
+
+for my $url (qw(
+  ws://hoge wss://hoge about:blank ftp://foo unknown://foo javascript:a
+)) {
+  test {
+    my $c = shift;
+    my $url = Web::URL->parse_string ($url);
+    ok ! $url->is_http_s;
+    done $c;
+  } n => 1;
+}
+
 run_tests;
 
 =head1 LICENSE
