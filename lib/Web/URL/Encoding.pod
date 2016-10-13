@@ -28,6 +28,10 @@ The following functions are exported by default:
 Percent-encode the string, encoded in UTF-8.  Anything other than
 C<[A-Za-z0-9_.-]> are percent-encoded.
 
+=item $bytes = percent_decode_b $bytes
+
+Percent-decode the bytes and return the result bytes.
+
 =item $bytes = oauth1_percent_encode_c $text
 
 Percent-encode the string, encoded in UTF-8, for OAuth 1.0.

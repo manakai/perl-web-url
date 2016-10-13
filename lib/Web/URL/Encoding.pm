@@ -25,6 +25,14 @@ sub percent_encode_c ($) {
   return $s;
 } # percent_encode_c
 
+push @EXPORT, qw(percent_decode_b);
+sub percent_decode_b ($) {
+  my $s = ''.$_[0];
+  utf8::encode ($s) if utf8::is_utf8 ($s);
+  $s =~ s/%([0-9A-Fa-f]{2})/pack 'C', hex $1/ge;
+  return $s;
+} # percent_decode_b
+
 sub _form_urlencoded_pe ($) {
   my $s = encode_web_utf8 $_[0];
   $s =~ s/([^*\x2D-.0-9A-Z_a-z])/sprintf '%%%02X', ord $1/ge;

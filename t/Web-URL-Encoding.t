@@ -44,6 +44,37 @@ for (
 }
 
 for (
+      [undef, '', ''],
+      ['', '', ''],
+      ['abc', 'abc', 'abc'],
+      [_flagged 'abc', 'abc', 'abc'],
+      ['%A1%C8NK%21%0D', "\xA1\xC8NK!\x0D", "\x{FFFD}\x{FFFD}NK!\x0D"],
+      ['%C2%A1%C3%88NK%21%0D', "\xC2\xA1\xC3\x88NK!\x0D", "\xA1\xC8NK!\x0D"],
+      ['http%3A%2F%2Fabc%2Fa%2Bb%3Fx%28y%29z~%5B%2A%5D', 'http://abc/a+b?x(y)z~[*]', 'http://abc/a+b?x(y)z~[*]'],
+      ["\xA1\xC8\x4E\x4B\x21\x0D", "\xA1\xC8NK!\x0D", "\x{FFFD}\x{FFFD}NK!\x0D"],
+      ["\x{4e00}\xC1", "\xE4\xB8\x80\xC3\x81", "\x{4e00}\xC1"],
+      ['%4E00%C1', "\x4e00\xC1", "\x4e00\x{FFFD}"],
+      ['%E4%B8%80%C3%81', "\xE4\xB8\x80\xC3\x81", "\x{4e00}\xC1"],
+      [_flagged '%E4%B8%80%C3%81', "\xE4\xB8\x80\xC3\x81", "\x{4e00}\xC1"],
+      ['ab+cd', 'ab+cd', 'ab+cd'],
+) {
+  my ($input, $x1, $x2) = @$_;
+  no warnings 'uninitialized';
+  test {
+    my $c = shift;
+
+    my $s = percent_decode_b ($input);
+    is $s, $x1, join '/', '_pd', 'b', $input;
+    ok !utf8::is_utf8 ($s);
+
+    #my $t = percent_decode_c ($input);
+    #is $t, $x2, join '/', '_pd', 'c', $input;
+
+    done $c;
+  } n => 2, name => 'decode';
+}
+
+for (
   [{}, ''],
   [{hoge => 41}, 'hoge=41'],
   [{abc => ['ab', '42']}, 'abc=ab&abc=42'],
