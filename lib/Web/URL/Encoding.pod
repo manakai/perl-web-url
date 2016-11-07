@@ -36,6 +36,10 @@ Percent-decode the bytes and return the result bytes.
 
 Percent-encode the string, encoded in UTF-8, for OAuth 1.0.
 
+=item $bytes = oauth1_percent_encode_b $text
+
+Percent-encode the bytes, for OAuth 1.0.
+
 =item $bytes = serialize_form_urlencoded $params
 
 Serialize a hash reference as an C<application/x-www-form-urlencoded>
@@ -60,10 +64,15 @@ URL Standard <https://url.spec.whatwg.org/>.
 RFC 5849, The OAuth 1.0 Protocol
 <https://tools.ietf.org/html/rfc5849>.
 
+When a text is encoded in UTF-8, "UTF-8 encode" steps of the Encoding
+Standard MUST be used.
+
 Encoding Standard <https://encoding.spec.whatwg.org/>.
 
-When a text is encoded in UTF-8, UTF-8 encoder of the Encoding
-Standard MUST be used.
+=head1 SEE ALSO
+
+SuikaWiki:percent-encoding
+<https://wiki.suikawiki.org/n/percent-encoding>.
 
 =head1 HISTORY
 

@@ -64,6 +64,14 @@ sub oauth1_percent_encode_c ($) {
   return $s;
 } # oauth1_percent_encode_c
 
+## RFC 5849 3.6.
+push @EXPORT, qw(oauth1_percent_encode_b);
+sub oauth1_percent_encode_b ($) {
+  my $s = ''.$_[0];
+  $s =~ s/([^0-9A-Za-z._~-])/sprintf '%%%02X', ord $1/ge;
+  return $s;
+} # oauth1_percent_encode_b
+
 1;
 
 =head1 LICENSE
