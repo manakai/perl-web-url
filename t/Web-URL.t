@@ -119,7 +119,7 @@ for (
     my $url = Web::URL->parse_string ($input);
     is $url->scheme, $scheme;
     is $url->username, $username;
-    is $url->password, $password;
+    is $url->password, defined $password ? $password : '';
     if (defined $url->host) {
       is $url->host->stringify, $host;
     } else {

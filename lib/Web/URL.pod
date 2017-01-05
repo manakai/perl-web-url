@@ -46,7 +46,8 @@ username component, the empty string is returned.
 
 =item $string = $url->password
 
-Return the password component of the URL, if any, or C<undef>.
+Return the password component of the URL.  If the URL has no explicit
+password component, the empty string is returned.
 
 =item $host = $url->host
 
@@ -139,7 +140,7 @@ Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

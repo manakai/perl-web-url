@@ -1,7 +1,7 @@
 package Web::URL;
 use strict;
 use warnings;
-our $VERSION = '1.0';
+our $VERSION = '2.0';
 use Web::Host;
 use Web::URL::_Defs;
 use Web::URL::Canonicalize qw(serialize_parsed_url parse_url resolve_url canonicalize_parsed_url);
@@ -30,7 +30,7 @@ sub username ($) {
 } # username
 
 sub password ($) {
-  return $_[0]->{password}; # or undef
+  return defined $_[0]->{password} ? $_[0]->{password} : '';
 } # password
 
 sub host ($) {
@@ -121,7 +121,7 @@ sub stringify_without_fragment ($) {
 
 =head1 LICENSE
 
-Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
