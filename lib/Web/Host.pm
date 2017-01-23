@@ -20,6 +20,21 @@ sub parse_string ($$) {
   }
 } # parse_string
 
+sub parse_hostport_string ($$) {
+  my ($class, $hostport_string) = @_;
+  # XXX this method should implement URLUtils.host setter's steps
+  require Web::URL;
+  my $host_url = Web::URL->parse_string ("x-internal://$hostport_string/");
+  if (not defined $host_url or
+      not $host_url->path eq '/' or
+      defined $host_url->query or
+      defined $host_url->{fragment}) {
+    return (undef, undef);
+  }
+  return (undef, undef) if $host_url->host->to_ascii eq '';
+  return ($host_url->host, $host_url->port);
+} # parse_hostport_string
+
 sub new_from_packed_addr ($$) {
   if (length $_[1] == 4) {
     my $self = $_[0]->parse_string (sprintf '%d.%d.%d.%d', unpack 'C4', $_[1]);

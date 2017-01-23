@@ -30,6 +30,13 @@ enclosed by C<[> and C<]>.  It does not have to be canonicalized.  It
 can be an IDN.  If the argument is not a valid host, an C<undef> value
 is returned instead.
 
+=item ($host, $port) = Web::Host->parse_hostport_string ($string)
+
+Parse the string as a host optionally followed by C<:> and port number
+and return a pair of a C<Web::Host> object for the host and an integer
+for the port.  If the argument is not a valid host and port string, an
+C<undef> and C<undef> pair is returned instead.
+
 =item $host = Web::Host->new_from_packed_addr ($bytes)
 
 Create a C<Web::Host> object for the "packed" IP address.  The
@@ -119,7 +126,7 @@ Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

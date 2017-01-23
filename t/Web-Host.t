@@ -175,11 +175,41 @@ test {
   done $c;
 } n => 1;
 
+for (
+  ['' => undef],
+  ['hoge' => ['hoge', undef]],
+  ['hoge:80' => ['hoge', 80]],
+  ['Hoge:080' => ['hoge', 80]],
+  ['foo.bar:443' => ['foo.bar', 443]],
+  ['hoge/fuga:80' => undef],
+  ['102.156.16.11' => ['102.156.16.11', undef]],
+  ['[::001]' => ['[::1]', undef]],
+  ['[::1]:1244' => ['[::1]', 1244]],
+  ["\x{5000}\x{3002}abc:66" => ['xn--rvq.abc', 66]],
+  ["\x{5000}\x{3e02}abc:66" => ['xn--abc-to5ct99f', 66]],
+) {
+  my ($input, $expected) = @$_;
+  test {
+    my $c = shift;
+    my ($host, $port) = Web::Host->parse_hostport_string ($input);
+    if (defined $expected) {
+      isa_ok $host, 'Web::Host';
+      is defined $host ? $host->to_ascii : undef, $expected->[0];
+      is $port, $expected->[1];
+    } else {
+      is $host, undef;
+      ok 1;
+      is $port, undef;
+    }
+    done $c;
+  } n => 3, name => ['parse_hostport_string', $input];
+}
+
 run_tests;
 
 =head1 LICENSE
 
-Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

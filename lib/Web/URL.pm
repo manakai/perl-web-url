@@ -33,6 +33,7 @@ sub password ($) {
   return defined $_[0]->{password} ? $_[0]->{password} : '';
 } # password
 
+# XXX not sure how to handle empty host...
 sub host ($) {
   return $_[0]->{host_parsed}; # or undef
 } # host
