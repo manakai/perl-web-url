@@ -74,6 +74,10 @@ sub set_query_params ($$;%) {
   }
 } # set_query_params
 
+sub fragment ($) {
+  return $_[0]->{fragment}; # or undef
+} # fragment
+
 sub clone ($) {
   # $_[0]->{host_parsed} is immutable
   return bless {%{$_[0]}}, ref $_[0];

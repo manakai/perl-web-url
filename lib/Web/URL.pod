@@ -72,7 +72,8 @@ Serialize the path and query components of the URL.
 
 =item $string = $url->query
 
-Return the query component of the URL, if any, or C<undef>.
+Return the query component of the URL, if any, or C<undef>.  It does
+not contain any C<?> prefix.
 
 =item $url->set_query_params ($params, append => $boolean)
 
@@ -87,6 +88,11 @@ If the C<append> flag is set to a false value, any existing query
 component of the URL is discarded.
 
 This method mutates the URL record object.
+
+=item $string = $url->fragment
+
+Return the fragment component of the URL, if any, or C<undef>.  It
+does not contain any C<#> prefix.
 
 =item $origin = $url->get_origin
 

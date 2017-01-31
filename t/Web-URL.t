@@ -82,37 +82,41 @@ for (
 }
 
 for (
-  [q<http://hoge/fuga>, 'http', '', undef, 'hoge', undef, '/fuga', undef,
+  [q<http://hoge/fuga>, 'http', '', undef, 'hoge', undef, '/fuga', undef, undef,
    'hoge', '/fuga'],
-  [q<Http://hoge:052/fuga>, 'http', '', undef, 'hoge', 52, '/fuga', undef,
+  [q<Http://hoge:052/fuga>, 'http', '', undef, 'hoge', 52, '/fuga', undef, undef,
    'hoge:52', '/fuga'],
-  [q<httpS://fopo@hoge/fuga>, 'https', 'fopo', undef, 'hoge', undef, '/fuga', undef,
+  [q<httpS://fopo@hoge/fuga>, 'https', 'fopo', undef, 'hoge', undef, '/fuga', undef, undef,
    'hoge', '/fuga'],
-  [q<http://ho:ge@_/fuga>, 'http', 'ho', 'ge', '_', undef, '/fuga', undef,
+  [q<http://ho:ge@_/fuga>, 'http', 'ho', 'ge', '_', undef, '/fuga', undef, undef,
    '_', '/fuga'],
-  [q<htt:foo:bar@ga>, 'htt', '', undef, undef, undef, 'foo:bar@ga', undef,
+  [q<htt:foo:bar@ga>, 'htt', '', undef, undef, undef, 'foo:bar@ga', undef, undef,
    undef, 'foo:bar@ga'],
-  [qq<http://\x{5000}hoge/fuga>, 'http', '', undef, 'xn--hoge-pc7f', undef, '/fuga', undef,
+  [qq<http://\x{5000}hoge/fuga>, 'http', '', undef, 'xn--hoge-pc7f', undef, '/fuga', undef, undef,
    'xn--hoge-pc7f', '/fuga'],
-  [q<http://123.44.000.01/fuga>, 'http', '', undef, '123.44.0.1', undef, '/fuga', undef,
+  [qq<http://\x{5000}hoge/fuga#\x{6001}>, 'http', '', undef, 'xn--hoge-pc7f', undef, '/fuga', undef, qq{%E6%80%81},
+   'xn--hoge-pc7f', '/fuga'],
+  [q<http://123.44.000.01/fuga>, 'http', '', undef, '123.44.0.1', undef, '/fuga', undef, undef,
    '123.44.0.1', '/fuga'],
-  [q<ftp://foo.bar>, 'ftp', '', undef, 'foo.bar', undef, '/', undef,
+  [q<ftp://foo.bar#>, 'ftp', '', undef, 'foo.bar', undef, '/', undef, '',
    'foo.bar', '/'],
-  [q<ftp://foo.bar?ab%4a>, 'ftp', '', undef, 'foo.bar', undef, '/', 'ab%4a',
+  [q<ftp://foo.bar?ab%4a>, 'ftp', '', undef, 'foo.bar', undef, '/', 'ab%4a', undef,
    'foo.bar', '/?ab%4a'],
-  [q<ftp://foo.bar/abc?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, '/abc', 'foo=bar',
+  [q<ftp://foo.bar/abc?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, '/abc', 'foo=bar', undef,
    'foo.bar', '/abc?foo=bar'],
-  [q<ftp://foo.bar/abc//xyz?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, '/abc//xyz', 'foo=bar',
+  [q<ftp://foo.bar/abc//xyz?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, '/abc//xyz', 'foo=bar', undef,
    'foo.bar', '/abc//xyz?foo=bar'],
-  [q<ftp://foo.bar///abc///?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, '///abc///', 'foo=bar',
+  [q<ftp://foo.bar///abc///?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, '///abc///', 'foo=bar', undef,
    'foo.bar', '///abc///?foo=bar'],
-  [q<xyz:>, 'xyz', '', undef, undef, undef, '', undef,
+  [q<ftp://foo.bar///abc///?foo=bar#ab c>, 'ftp', '', undef, 'foo.bar', undef, '///abc///', 'foo=bar', 'ab c',
+   'foo.bar', '///abc///?foo=bar'],
+  [q<xyz:>, 'xyz', '', undef, undef, undef, '', undef, undef,
    undef, ''],
 #XXX
-#  [q<about:hoge?fuga#abc>, 'about', '', undef, 'hoge', 'fuga',
+#  [q<about:hoge?fuga#abc>, 'about', '', undef, 'hoge', 'fuga', undef,
 #   undef, 'hoge?fuga'],
 ) {
-  my ($input, $scheme, $username, $password, $host, $port, $path, $query,
+  my ($input, $scheme, $username, $password, $host, $port, $path, $query, $fr,
       $hostport, $pathquery) = @$_;
   test {
     my $c = shift;
@@ -127,10 +131,11 @@ for (
     }
     is $url->port, $port;
     is $url->query, $query;
+    is $url->fragment, $fr,
     is $url->hostport, $hostport;
     is $url->pathquery, $pathquery;
     done $c;
-  } n => 8, name => $input;
+  } n => 9, name => $input;
 }
 
 test {
@@ -231,7 +236,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
