@@ -71,11 +71,11 @@ for (
     is $s, $x1, join '/', '_pd', 'b', $input;
     ok !utf8::is_utf8 ($s);
 
-    #my $t = percent_decode_c ($input);
-    #is $t, $x2, join '/', '_pd', 'c', $input;
+    my $t = percent_decode_c ($input);
+    is $t, $x2, join '/', '_pd', 'c', $input;
 
     done $c;
-  } n => 2, name => 'decode';
+  } n => 3, name => 'decode';
 }
 
 for (
@@ -105,7 +105,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

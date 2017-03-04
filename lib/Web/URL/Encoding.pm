@@ -3,7 +3,7 @@ use strict;
 use warnings;
 our $VERSION = '1.0';
 use Carp;
-use Web::Encoding qw(encode_web_utf8);
+use Web::Encoding qw(encode_web_utf8 decode_web_utf8);
 
 our @EXPORT;
 
@@ -24,6 +24,14 @@ sub percent_encode_c ($) {
   $s =~ s/([^0-9A-Za-z._-])/sprintf '%%%02X', ord $1/ge;
   return $s;
 } # percent_encode_c
+
+push @EXPORT, qw(percent_decode_c);
+sub percent_decode_c ($) {
+  my $s = ''.$_[0];
+  utf8::encode ($s) if utf8::is_utf8 ($s);
+  $s =~ s/%([0-9A-Fa-f]{2})/pack 'C', hex $1/ge;
+  return decode_web_utf8 $s;
+} # percent_decode_c
 
 push @EXPORT, qw(percent_decode_b);
 sub percent_decode_b ($) {
@@ -78,7 +86,7 @@ sub oauth1_percent_encode_b ($) {
 
 Copyright 2009-2013 Hatena <https://www.hatena.ne.jp/>.
 
-Copyright 2014-2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

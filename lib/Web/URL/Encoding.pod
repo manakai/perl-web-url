@@ -28,6 +28,10 @@ The following functions are exported by default:
 Percent-encode the string, encoded in UTF-8.  Anything other than
 C<[A-Za-z0-9_.-]> are percent-encoded.
 
+=item $text = percent_decode_c $bytes
+
+Percent-decode the bytes and then decode as a UTF-8 string.
+
 =item $bytes = percent_decode_b $bytes
 
 Percent-decode the bytes and return the result bytes.
