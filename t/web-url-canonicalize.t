@@ -8,6 +8,7 @@ use Test::X1;
 use Test::More;
 use Test::Differences;
 use Test::HTCT::Parser;
+use Web::Encoding;
 use Web::URL::Canonicalize qw(
   url_to_canon_url url_to_canon_parsed_url
   parse_url resolve_url canonicalize_parsed_url serialize_parsed_url
@@ -196,7 +197,7 @@ sub __canon (@) {
             if not defined $result->{canon} and not $result->{invalid};
         my $resolved_base_url = parse_url $base_url;
         my $resolved_url = resolve_url $test->{data}->[0], $resolved_base_url;
-        canonicalize_parsed_url $resolved_url, $charset;
+        canonicalize_parsed_url $resolved_url, Web::Encoding::encoding_label_to_name $charset;
         my $url = serialize_parsed_url $resolved_url;
         $resolved_url->{canon} = $url if defined $url;
         delete $resolved_url->{is_hierarchical};
@@ -211,7 +212,7 @@ sub __canon (@) {
 
           if ($BROWSER eq 'this' and defined $url) {
             my $resolved_url2 = resolve_url $url, $resolved_base_url;
-            canonicalize_parsed_url $resolved_url2, $charset;
+            canonicalize_parsed_url $resolved_url2, Web::Encoding::encoding_label_to_name $charset;
             my $url2 = serialize_parsed_url $resolved_url2;
 #line 1 "_canon_idempotent"
             eq_or_diff $url2, $url, 'idempotency';
@@ -234,7 +235,7 @@ __canon @decomps_data_f;
     [qq<??>, q<http://foo/>, undef, q<http://foo/??>],
     [qq<?\x{5050}>, q<http://hoge>, undef, q<http://hoge/?%E5%81%90>],
     [qq<?\x{5050}>, q<http://hoge>, 'utf-8', q<http://hoge/?%E5%81%90>],
-    [qq<?\x{5050}>, q<http://hoge>, 'iso-8859-1', q<http://hoge/??>],
+    [qq<?\x{5050}>, q<http://hoge>, 'iso-8859-1', q<http://hoge/?&#20560;>],
     [qq<?\x{5050}>, q<http://hoge>, 'euc-jp', q<http://hoge/?%D0%F4>],
     [q<#>, undef, undef, undef],
     [q<foo>, q<bar>, undef, undef],
@@ -252,7 +253,7 @@ __canon @decomps_data_f;
   ) {
     test {
       my $c = shift;
-      my $canon = url_to_canon_url $test->[0], $test->[1], $test->[2];
+      my $canon = url_to_canon_url $test->[0], $test->[1], Web::Encoding::encoding_label_to_name $test->[2];
       is $canon, $test->[3];
       done $c;
     } n => 1, name => 'url_to_canon_url';
@@ -279,7 +280,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2011-2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2011-2017 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
