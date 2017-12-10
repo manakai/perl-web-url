@@ -108,7 +108,7 @@ for (
    'foo.bar', '/abc//xyz?foo=bar'],
   [q<ftp://foo.bar///abc///?foo=bar>, 'ftp', '', undef, 'foo.bar', undef, '///abc///', 'foo=bar', undef,
    'foo.bar', '///abc///?foo=bar'],
-  [q<ftp://foo.bar///abc///?foo=bar#ab c>, 'ftp', '', undef, 'foo.bar', undef, '///abc///', 'foo=bar', 'ab c',
+  [q<ftp://foo.bar///abc///?foo=bar#ab c>, 'ftp', '', undef, 'foo.bar', undef, '///abc///', 'foo=bar', 'ab%20c',
    'foo.bar', '///abc///?foo=bar'],
   [q<xyz:>, 'xyz', '', undef, undef, undef, '', undef, undef,
    undef, ''],

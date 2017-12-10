@@ -612,7 +612,7 @@ sub canonicalize_parsed_url ($;$) {
   }
 
   if (defined $parsed_url->{fragment}) {
-    $parsed_url->{fragment} =~ s{([^\x20-\x7E])}{
+    $parsed_url->{fragment} =~ s{([^!\x23-\x3B=?-_a-~])}{
       join '',
           map { sprintf '%%%02X', ord $_ }
           split //,
