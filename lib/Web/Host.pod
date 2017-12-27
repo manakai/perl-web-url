@@ -68,6 +68,8 @@ if their serializations are equal, by definition.
 
 =item $string = $host->to_ascii
 
+=item $string = $host->TO_JSON
+
 Serialize the host, using the host serializer of the URL Standard.
 The result is canonicalized.  Any IDN is converted into its Punycode
 form.  IPv6 addresses are enclosed in C<[> and C<]>.
@@ -118,7 +120,7 @@ If the host is a domain, C<undef> is returned instead.
 URL Standard <https://url.spec.whatwg.org/>.
 
 UTS #46: Unicode IDNA Compatibility Processing
-<http://www.unicode.org/reports/tr46/>.
+<https://www.unicode.org/reports/tr46/>.
 
 =head1 AUTHOR
 

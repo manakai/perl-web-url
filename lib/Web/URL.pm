@@ -102,6 +102,8 @@ sub stringify ($) {
   return serialize_parsed_url $_[0];
 } # stringify
 
+*TO_JSON = \&stringify;
+
 sub originpath ($) {
   local $_[0]->{user} = undef;
   local $_[0]->{password} = undef;

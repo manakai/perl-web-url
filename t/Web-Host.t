@@ -31,12 +31,13 @@ for (
     ok ! $host->is_ipv6;
     is $host->stringify, $output;
     is $host->to_ascii, $output;
+    is $host->TO_JSON, $output;
     is $host->to_unicode, $uoutput;
     ok $host->equals ($host);
     is $host->packed_addr, undef;
     is $host->text_addr, undef;
     done $c;
-  } n => 11, name => 'domains';
+  } n => 12, name => 'domains';
 }
 
 for (
@@ -55,6 +56,7 @@ for (
     ok ! $host->is_ipv6;
     is $host->stringify, $output;
     is $host->to_ascii, $output;
+    is $host->TO_JSON, $output;
     is $host->to_unicode, $output;
     is $host->text_addr, $output;
     ok $host->equals ($host);
@@ -66,7 +68,7 @@ for (
     ok $host2->equals ($host);
     is $host2->stringify, $host->stringify;
     done $c;
-  } n => 15, name => 'IPv4 addresses';
+  } n => 16, name => 'IPv4 addresses';
 }
 
 for (
@@ -88,6 +90,7 @@ for (
     ok $host->is_ipv6;
     is $host->stringify, $output;
     is $host->to_ascii, $output;
+    is $host->TO_JSON, $output;
     is $host->to_unicode, $output;
     is "[".$host->text_addr."]", $output;
     ok $host->equals ($host);
@@ -99,7 +102,7 @@ for (
     ok $host2->equals ($host);
     is $host2->stringify, $host->stringify;
     done $c;
-  } n => 15, name => 'IPv6 addresses';
+  } n => 16, name => 'IPv6 addresses';
 }
 
 for (

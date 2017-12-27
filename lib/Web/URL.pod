@@ -101,6 +101,8 @@ the URL.
 
 =item $string = $url->stringify
 
+=item $string = $url->TO_JSON
+
 Serialize the URL record as a string.
 
 =item $string = $url->stringify_without_fragment

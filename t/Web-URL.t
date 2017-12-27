@@ -34,6 +34,7 @@ for (
       is $url->originpath, $expected3;
       is $url->originpathquery, $expected4;
       is $url->stringify, $expected;
+      is $url->TO_JSON, $expected;
       is $url->stringify_without_fragment, $expected2;
     } else {
       is $url, undef;
@@ -41,10 +42,11 @@ for (
       ok 1;
       ok 1;
       ok 1;
+      ok 1;
     }
 
     done $c;
-  } n => 5;
+  } n => 6;
 }
 
 for (
