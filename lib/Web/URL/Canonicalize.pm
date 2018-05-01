@@ -280,6 +280,16 @@ sub _resolve_relative_url ($$) {
   my ($parsed_spec, $parsed_base_url) = @_;
 
   unless ($parsed_base_url->{is_hierarchical}) {
+    if ((not defined $parsed_spec->{path} or
+         not length $parsed_spec->{path}) and
+        not defined $parsed_spec->{host} and # no user/password/port and
+        not defined $parsed_spec->{query} and
+        defined $parsed_spec->{fragment}) {
+      my $url = {%$parsed_base_url};
+      $url->{fragment} = $parsed_spec->{fragment};
+      return $url;
+    }
+
     return {invalid => 1};
   }
 
@@ -684,7 +694,7 @@ sub url_to_canon_parsed_url ($;$$) {
 
 =head1 LICENSE
 
-Copyright 2011-2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2011-2018 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
