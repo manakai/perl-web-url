@@ -22,7 +22,7 @@ Deprecated API:
 
 * Dependency
 
-Perl 5.10 or later is required.  Latest version of Perl, which
+Perl 5.14 or later is required.  Latest version of Perl, which
 supports latest version of the Unicode Standard, which can affect
 canonicalization of domain names, should be used.
 
