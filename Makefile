@@ -1,4 +1,6 @@
 GIT = git
+WGET = wget
+CURL = curl
 
 all:
 
@@ -11,11 +13,9 @@ updatenightly: clean local/bin/pmbp.pl build
 	git add modules t_deps/modules
 	perl local/bin/pmbp.pl --update
 	git add config
+	$(CURL) -sSLf https://raw.githubusercontent.com/wakaba/ciconfig/master/ciconfig | RUN_GIT=1 REMOVE_UNUSED=1 perl
 
 ## ------ Deps ------
-
-WGET = wget
-CURL = curl
 
 PERL = ./perl
 PERLT = $(PERL)
