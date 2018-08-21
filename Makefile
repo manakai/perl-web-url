@@ -80,7 +80,7 @@ lib/Web/DomainName/_CharMaps.pm: bin/generate-charmaps.pl local/maps.json
 
 test: test-deps show-perl-version show-unicore-version test-main
 
-test-deps: deps
+test-deps: deps json-ps
 
 show-perl-version:
 	$(PERL) -v
