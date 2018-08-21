@@ -26,6 +26,45 @@ This method is appropriate for parsing C<http_proxy>, C<https_proxy>,
 or C<ftp_proxy> environment variable value, decoded by
 platform-locale-dependent character encoding.
 
+=item $result = $parser->split_by_urls ($string, NAME => VALUE, ...)
+
+Extract URLs in a free-form text for autolinking.
+
+The first argument must be the text string to be parsed.
+
+The second and later arguments are interpretd as name/value pairs of
+options.  If the C<lax> option is specified to a true value, parsing
+is performed in the I<lax> mode.  A public Web application (e.g. a
+forum service interpreting user-posted entries) should not use the
+I<lax> mode.  A client application (e.g. an e-mail client displaying a
+plain-text mail message) should use the I<lax> mode.
+
+This method only extracts C<http:> and C<https:> URLs.  In the I<lax>
+mode, C<ttp:> and C<ttps:> URL schemes are also detected and are
+interpreted as C<http:> and C<https:>, respectively.
+
+This method returns an array reference.  It contains substrings of the
+input text, in order, as array references.  An inner array is either a
+text array or a link array.  A text array's 0-th item is a text
+string, representing a substring that is not a URL.  A link array's
+0-th item is a text string, representing a substring that is
+interpreted as a URL, and its 1-th item is a text string, which can be
+used as an input to the URL parser.
+
+  Example.
+
+    $result = $parser->split_by_urls ("See https://example.com later!");
+    # $result = [
+    #   ["See "],
+    #   ["https://example.com", "https://example.com"],
+    #   [" later!"],
+    # ];
+
+    $result = $parser->split_by_urls ("ttps://example.com", lax => 1);
+    # $result = [
+    #   ["https://example.com", "ttps://example.com"],
+    # ];
+
 =back
 
 =head1 SPECIFICATION
@@ -39,7 +78,7 @@ Wakaba <wakaba@suikawiki.org>.
 
 =head1 LICENSE
 
-Copyright 2016 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2018 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
