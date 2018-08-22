@@ -20,7 +20,7 @@ sub parse_proxy_env ($$) {
   my $nonascii = qq[\xA1-\xAA\xAC-\xBA\xBC-\x{167F}\x{1681}-\x{1FFF}\x{200B}-\x{2027}\x{202A}-\x{202E}\x{2030}-\x{205E}\x{2060}-\x{2FFF}\x{3003}-\x{FEFF}\x{FF10}-\x{10FFFF}];
   my $chars = qq[0-9A-Za-z._:=~$nonascii-];
   use utf8;
-  my $Pattern = qr{(?:[%$chars]*\@)?(?:[0-9A-Za-z._%０-９Ａ-Ｚａ-ｚ．$nonascii]+[.．][0-9A-Za-z._%０-９Ａ-Ｚａ-ｚ．$nonascii-]*[0-9A-Za-z_%０-９Ａ-Ｚａ-ｚ]|\[[0-9:]+\])(?::[0-9]*|)(?:[/／](?>[%/$chars]|\([%/$chars]*\))*|)(?:\?(?>[%&;$chars]|\([%&;$chars]*\))*|)(?:\#(?>[%&;!$chars]|\([%&l!$chars]*\))*|)(?<![.:])};
+  my $Pattern = qr{(?:[%$chars]*\@)?(?:[0-9A-Za-z._%０-９Ａ-Ｚａ-ｚ．$nonascii-]+[.．][0-9A-Za-z._%０-９Ａ-Ｚａ-ｚ．$nonascii-]*[0-9A-Za-z_%０-９Ａ-Ｚａ-ｚ]|\[[0-9:]+\])(?::[0-9]*|)(?:[/／](?>[%/$chars]|\([%/$chars]*\))*|)(?:\?(?>[%&;$chars]|\([%&;$chars]*\))*|)(?:\#(?>[%&;!$chars]|\([%&l!$chars]*\))*|)(?<![.:])};
   my $AllHTTPSScheme = qr{[HhＨｈ]?[TtＴｔ][TtＴｔ][PpＰｐ][SsＳｓ]};
   my $AllHTTPScheme = qr{[HhＨｈ]?[TtＴｔ][TtＴｔ][PpＰｐ]};
   my $MinScheme = qr{[HhＨｈ][TtＴｔ][TtＴｔ][PpＰｐ][SsＳｓ]?};
