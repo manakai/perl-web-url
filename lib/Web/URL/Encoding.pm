@@ -1,7 +1,7 @@
 package Web::URL::Encoding;
 use strict;
 use warnings;
-our $VERSION = '1.0';
+our $VERSION = '3.0';
 use Carp;
 use Web::Encoding qw(encode_web_utf8 decode_web_utf8);
 
@@ -55,7 +55,7 @@ sub serialize_form_urlencoded ($) {
     my $n = _form_urlencoded_pe $_;
     my $vs = $params->{$_};
     if (defined $vs and ref $vs eq 'ARRAY') {
-      (map { $n . '=' . _form_urlencoded_pe $_ } grep { defined $_ } @$vs);
+      (map { $n . '=' . _form_urlencoded_pe ($_ // '') } @$vs);
     } elsif (defined $vs) {
       ($n . '=' . _form_urlencoded_pe $vs);
     } else {
@@ -86,7 +86,7 @@ sub oauth1_percent_encode_b ($) {
 
 Copyright 2009-2013 Hatena <https://www.hatena.ne.jp/>.
 
-Copyright 2014-2017 Wakaba <wakaba@suikawiki.org>.
+Copyright 2014-2019 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

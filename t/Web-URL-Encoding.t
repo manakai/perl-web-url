@@ -82,6 +82,8 @@ for (
   [{}, ''],
   [{hoge => 41}, 'hoge=41'],
   [{abc => ['ab', '42']}, 'abc=ab&abc=42'],
+  [{abc => [undef, '42']}, 'abc=&abc=42'],
+  [{abc => [undef]}, 'abc='],
   [{"\x{500}" => "\x{504}"}, '%D4%80=%D4%84'],
   [{'' => ''}, '='],
   [{abc => ''}, 'abc='],
@@ -105,7 +107,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2019 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
