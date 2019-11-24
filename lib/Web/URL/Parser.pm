@@ -2,7 +2,7 @@ package Web::URL::Parser;
 use strict;
 use warnings;
 no warnings 'utf8';
-our $VERSION = '1.0';
+our $VERSION = '2.0';
 use Web::URL;
 
 sub new ($) {
@@ -47,11 +47,34 @@ sub parse_proxy_env ($$) {
   } # split_by_urls
 }
 
+{
+  sub _htescape ($) {
+    my $s = $_[0];
+    $s =~ s/&/&amp;/g;
+    $s =~ s/</&lt;/g;
+    $s =~ s/"/&quot;/g;
+    return $s;
+  } # _htescape
+
+  sub text_to_autolinked_html ($$;%) {
+    my $self = shift;
+    return join '', map {
+      if (defined $_->[1] and $_->[1] =~ m{^[Hh][Tt][Tt][Pp][Ss]?://}) {
+        sprintf '<a href="%s" class=url-link>%s</a>',
+            _htescape $_->[1],
+            _htescape $_->[0];
+      } else {
+        _htescape $_->[0];
+      }
+    } @{$self->split_by_urls (@_)};
+  } # text_to_autolinked_html
+}
+
 1;
 
 =head1 LICENSE
 
-Copyright 2016-2018 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2019 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
