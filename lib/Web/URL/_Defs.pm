@@ -11,7 +11,6 @@ $Web::URL::_Defs = {
                         'blob' => 'nested',
                         'file' => 'file',
                         'ftp' => 'hostport',
-                        'gopher' => 'hostport',
                         'http' => 'hostport',
                         'https' => 'hostport',
                         'ws' => 'hostport',
