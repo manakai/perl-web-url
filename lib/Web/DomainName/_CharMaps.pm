@@ -820,7 +820,7 @@ $Web::DomainName::Canonicalize::IDNAMapped =$VAR1 = {
           "\x{1e94}" => "\x{1e95}",
           "\x{1e9a}" => "a\x{2be}",
           "\x{1e9b}" => "\x{1e61}",
-          "\x{1e9e}" => 'ss',
+          "\x{1e9e}" => 'ß',
           "\x{1ea0}" => "\x{1ea1}",
           "\x{1ea2}" => "\x{1ea3}",
           "\x{1ea4}" => "\x{1ea5}",
