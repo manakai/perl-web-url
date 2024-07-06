@@ -83,6 +83,16 @@ sub clone ($) {
   return bless {%{$_[0]}}, ref $_[0];
 } # clone
 
+sub no_fragment ($) {
+  if (defined $_[0]->{fragment}) {
+    my $self = bless {%{$_[0]}}, ref $_[0];
+    delete $self->{fragment};
+    return $self;
+  } else {
+    return $_[0];
+  }
+} # no_fragment
+
 sub get_origin ($) {
   my $self = $_[0];
   require Web::Origin;
@@ -128,7 +138,7 @@ sub stringify_without_fragment ($) {
 
 =head1 LICENSE
 
-Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2024 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

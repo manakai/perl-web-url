@@ -156,6 +156,48 @@ test {
 test {
   my $c = shift;
   my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a#x>);
+  my $clone = $url->no_fragment;
+  isa_ok $clone, 'Web::URL';
+  isnt $clone, $url;
+  is $clone->stringify, 'http://foo.bar/baz/abc?a';
+  $clone->set_query_params ({foo => 4});
+  is $url->stringify, q<http://foo.bar/baz/abc?a#x>;
+  is $clone->stringify, q<http://foo.bar/baz/abc?foo=4>;
+  is $clone->fragment, undef;
+  done $c;
+} n => 6, name => 'no_fragment, has fragment';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a#>);
+  my $clone = $url->no_fragment;
+  isa_ok $clone, 'Web::URL';
+  isnt $clone, $url;
+  is $clone->stringify, 'http://foo.bar/baz/abc?a';
+  $clone->set_query_params ({foo => 4});
+  is $url->stringify, q<http://foo.bar/baz/abc?a#>;
+  is $clone->stringify, q<http://foo.bar/baz/abc?foo=4>;
+  is $clone->fragment, undef;
+  done $c;
+} n => 6, name => 'no_fragment, has empty fragment';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a>);
+  my $clone = $url->no_fragment;
+  isa_ok $clone, 'Web::URL';
+  is $clone, $url;
+  is $clone->stringify, 'http://foo.bar/baz/abc?a';
+  $clone->set_query_params ({foo => 4});
+  is $url->stringify, q<http://foo.bar/baz/abc?foo=4>;
+  is $clone->stringify, q<http://foo.bar/baz/abc?foo=4>;
+  is $clone->fragment, undef;
+  done $c;
+} n => 6, name => 'no_fragment, no fragment';
+
+test {
+  my $c = shift;
+  my $url = Web::URL->parse_string (q<http://foo.bar/baz/abc?a#x>);
   $url->set_query_params ({});
   is $url->stringify, q<http://foo.bar/baz/abc?#x>;
   done $c;
@@ -238,7 +280,7 @@ run_tests;
 
 =head1 LICENSE
 
-Copyright 2016-2017 Wakaba <wakaba@suikawiki.org>.
+Copyright 2016-2024 Wakaba <wakaba@suikawiki.org>.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
