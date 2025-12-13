@@ -55,7 +55,7 @@ sub serialize_form_urlencoded ($) {
     my $n = _form_urlencoded_pe $_;
     my $vs = $params->{$_};
     if (defined $vs and ref $vs eq 'ARRAY') {
-      (map { $n . '=' . _form_urlencoded_pe ($_ // '') } @$vs);
+      (map { $n . '=' . _form_urlencoded_pe (defined $_ ? $_ : '') } @$vs);
     } elsif (defined $vs) {
       ($n . '=' . _form_urlencoded_pe $vs);
     } else {
